@@ -1,4 +1,5 @@
 package com.dgteam.callblocker;
+//hello
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -41,12 +42,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         viewHolder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
-                if(isLongClick){
-                    ContactItem contactItem = contactList.get(position);
-                    contactList.remove(position);
-                    notifyDataSetChanged();
-                    Toast.makeText(context,"Đã xóa "+contactItem.getName(),Toast.LENGTH_SHORT).show();;
-                }
+
             }
         });
     }
