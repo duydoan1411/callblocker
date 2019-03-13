@@ -22,12 +22,13 @@
             android:id="@+id/tvName"
             android:gravity="bottom"
             android:paddingLeft="30dp"
-            android:text="No name"
+            android:text=""
             android:textStyle="bold"
             android:textSize="20sp"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="0dp" />
+
 
         <TextView
             android:id="@+id/tvNumber"

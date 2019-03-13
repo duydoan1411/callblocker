@@ -1,19 +1,26 @@
 package com.dgteam.callblocker;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telecom.TelecomManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
@@ -48,8 +55,68 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         tabLayout.getTabAt(1).setIcon(R.drawable.blacklist_icon);
 
         contextOfApplication = getApplicationContext();
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setIcon(R.drawable.warning_amber);
+                alert.setTitle("Cảnh báo!");
+                alert.setMessage("Ứng dụng sẽ không hoạt động nếu bạn không cấp quyền." +
+                        " Việc cấp quyền này là an toàn.");
+                alert.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        permisson(Manifest.permission.READ_CONTACTS);
+                    }
+                });
+                alert.setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogQuit();
+                    }
+                });
+                alert.setCancelable(false);
+                alert.show();
+            }
+        }
     }
 
+    public void dialogQuit(){
+        AlertDialog.Builder alert2 = new AlertDialog.Builder(MainActivity.this);
+        alert2.setTitle("Đóng ứng dụng");
+        alert2.setIcon(R.drawable.warning_amber);
+        alert2.setMessage("Ứng dụng sẽ đóng!");
+        alert2.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+                System.exit(0);
+            }
+        });
+        alert2.setCancelable(false);
+        alert2.show();
+    }
+
+    public void permisson(String permissonName){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (checkSelfPermission(permissonName) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{permissonName}, 1);
+
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            } else {
+                dialogQuit();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
 
     private void setViewPager(){
         adapter = new VPAdapter(getSupportFragmentManager());
@@ -63,27 +130,10 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
 
 
 
-
-//    public void selectContact() {
-//        Intent intent = new Intent(Intent.ACTION_PICK);
-//        intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
-//        if (intent.resolveActivity(getPackageManager()) != null) {
-//            startActivityForResult(intent, REQUEST_SELECT_CONTACT);
-//        }
-//    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         adapter.getItem(0).onActivityResult(requestCode,resultCode,data);
         super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 2 && resultCode == RESULT_OK) {
-//            Uri contactUri = data.getData();
-//            Cursor cursor = getContentResolver().query(contactUri, null, null, null, null);
-//            cursor.moveToFirst();
-//            int column = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-//
-//            Log.d("phone number", cursor.getString(column));
-//        }
     }
 
     @Override

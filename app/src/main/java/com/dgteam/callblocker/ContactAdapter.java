@@ -1,16 +1,15 @@
 package com.dgteam.callblocker;
-//hello
-//hello2
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+//import android.widget.Toast;
 
 import java.util.List;
 
@@ -36,14 +35,17 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.imAvatar.setImageResource(contactList.get(i).getAvatar());
         viewHolder.tvName.setText(contactList.get(i).getName());
         viewHolder.tvNumber.setText(contactList.get(i).getNumber());
+        viewHolder.imAvatar.setImageBitmap(contactList.get(i).getAvatar());
 
         viewHolder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
-
+                if (isLongClick){
+                    contactList.remove(position);
+                    notifyItemRemoved(position);
+                }
             }
         });
     }

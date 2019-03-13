@@ -1,21 +1,24 @@
 package com.dgteam.callblocker;
 
+import android.graphics.Bitmap;
+
 public class ContactItem {
 
-    private String number, name;
-    private int avatar;
+    private String number, name, id;
+    private Bitmap avatar;
 
-    public ContactItem(String name, String number, int avatar) {
+    public ContactItem(String id,String name, String number, Bitmap avatar) {
+        this.id = id;
         this.number = number;
         this.name = name;
         this.avatar = avatar;
     }
 
-    public int getAvatar() {
+    public Bitmap getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(int avatar) {
+    public void setAvatar(Bitmap avatar) {
         this.avatar = avatar;
     }
 
