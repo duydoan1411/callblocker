@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".BlackList">
 
-
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewBalckList"
         android:scrollbars="vertical"
@@ -22,26 +20,38 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:clickable="true"
+        app:backgroundTint="#009688"
         app:layout_anchor="@id/recyclerViewBalckList"
-        app:layout_anchorGravity="bottom|right"
-        android:src="@drawable/add_icon" />
+        app:layout_anchorGravity="bottom|right" />
 
-    <!--<TextView-->
-        <!--android:id="@+id/textView"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textSize="20sp"-->
-        <!--android:text="TextView" />-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabPersonAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/fabNumber"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="90dp"
+        android:clickable="true"
+        android:src="@drawable/person_add"
+        android:visibility="invisible"
+        app:backgroundTint="#FFEB3B"
+        app:layout_anchor="@id/floatingActionButton4"
+        app:layout_anchorGravity="top|right"
+        tools:srcCompat="@tools:sample/avatars" />
 
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/floatingActionButton3"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:clickable="true"-->
-        <!--android:src="@drawable/add_icon"-->
-        <!--app:layout_anchor="@id/recyclerViewBalckList"-->
-        <!--app:layout_anchorGravity="right|bottom" />-->
-
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabNumber"
+        app:layout_anchor="@id/fabPersonAdd"
+        app:layout_anchorGravity="top|right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="#FF9800"
+        android:src="@drawable/add_number"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="160dp"
+        android:visibility="invisible"
+        android:clickable="true"
+        tools:srcCompat="@tools:sample/avatars" />
 
 
 

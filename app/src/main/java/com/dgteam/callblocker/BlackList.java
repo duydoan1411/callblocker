@@ -38,7 +38,7 @@ import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
 
-
+//Fragment
 public class BlackList extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
@@ -46,7 +46,7 @@ public class BlackList extends Fragment {
     public static final int REQUEST_SELECT_CONTACT = 1;
 
     private RecyclerView recyclerView;
-    private FloatingActionButton btAdd;
+    private FloatingActionButton btAdd, fabContact, fabNumber;
     private ArrayList<ContactItem> contactList = new ArrayList<>();
     private ContactAdapter contactAdapter;
 
@@ -78,28 +78,51 @@ public class BlackList extends Fragment {
         }
     }
 
-    public static void toastk(Context context, String string){
-        Toast.makeText(context,string,Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        ///Ánh xạ các view
         View view = inflater.inflate(R.layout.fragment_black_list,container,false);
         recyclerView = view.findViewById(R.id.recyclerViewBalckList);
         btAdd = view.findViewById(R.id.floatingActionButton4);
+        fabContact = view.findViewById(R.id.fabPersonAdd);
+        fabNumber = view.findViewById(R.id.fabNumber);
+        boolean[] kt = {true};
+        btAdd.setImageResource(R.drawable.add);
         btAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectContact();
+                kt[0] =!kt[0];
+                if (kt[0]) {
+                    btAdd.setImageResource(R.drawable.add);
+                    an();
+                }
+                else {
+                    btAdd.setImageResource(R.drawable.clear);
+                    hien();
+                }
             }
         });
+        fabContact.setOnClickListener(view1 -> selectContact());
+        //fabNumber.setOnClickListener();
         showRecyclerView(container);
         if (contactList.size()==7) Toast.makeText(getContext(),contactList.get(0).getName(),Toast.LENGTH_SHORT).show();
         return view;
     }
 
+
+    private void hien(){
+        fabNumber.show();
+        fabContact.show();
+    }
+
+    private void an(){
+        fabContact.hide();
+        fabNumber.hide();
+    }
+
+    //Xử lý RecyclerView
     public void showRecyclerView(ViewGroup container){
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(),

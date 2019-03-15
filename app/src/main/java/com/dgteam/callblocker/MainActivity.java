@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    static final int REQUEST_SELECT_CONTACT = 1;
+    //static final int REQUEST_SELECT_CONTACT = 1;
     private BlackList blackList;
     private BlockLogs blockLogs;
     private VPAdapter adapter;
@@ -56,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
 
         contextOfApplication = getApplicationContext();
 
+
+        //Yêu cầu quyền đọc danh bạ
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -63,40 +66,29 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
                 alert.setTitle("Cảnh báo!");
                 alert.setMessage("Ứng dụng sẽ không hoạt động nếu bạn không cấp quyền." +
                         " Việc cấp quyền này là an toàn.");
-                alert.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        permisson(Manifest.permission.READ_CONTACTS);
-                    }
-                });
-                alert.setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogQuit();
-                    }
-                });
+                alert.setPositiveButton("Đồng ý", (dialogInterface, i) ->
+                        permisson(Manifest.permission.READ_CONTACTS));
+                alert.setNegativeButton("Từ chối", (d,i) -> dialogQuit());
                 alert.setCancelable(false);
                 alert.show();
             }
         }
     }
-
+    // Thoát ứng dụng
     public void dialogQuit(){
         AlertDialog.Builder alert2 = new AlertDialog.Builder(MainActivity.this);
         alert2.setTitle("Đóng ứng dụng");
         alert2.setIcon(R.drawable.warning_amber);
         alert2.setMessage("Ứng dụng sẽ đóng!");
-        alert2.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
-                System.exit(0);
-            }
+        alert2.setPositiveButton("Thoát", (dialogInterface, i) -> {
+            finish();
+            System.exit(0);
         });
         alert2.setCancelable(false);
         alert2.show();
     }
 
+    //Yêu cầu quyền trên android 6.0+
     public void permisson(String permissonName){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (checkSelfPermission(permissonName) != PackageManager.PERMISSION_GRANTED) {
@@ -106,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         }
     }
 
+    //Kiểm tra xem có chấp nhận quyền không
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 1) {
