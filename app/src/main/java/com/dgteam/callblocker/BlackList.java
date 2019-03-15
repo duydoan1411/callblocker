@@ -138,7 +138,8 @@ public class BlackList extends Fragment {
                             null, null);
 
                     phone.moveToFirst();
-                    String number = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA));
+                    String number = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA))
+                            .replaceAll("\\D+","");
                     String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
                             .replaceAll("\n"," ");
 
