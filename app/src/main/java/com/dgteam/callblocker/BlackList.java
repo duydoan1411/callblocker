@@ -55,6 +55,7 @@ public class BlackList extends Fragment {
     private ContactAdapter contactAdapter;
 
     private String mParam1;
+    //
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
