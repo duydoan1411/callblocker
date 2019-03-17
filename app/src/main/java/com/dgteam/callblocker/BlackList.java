@@ -2,6 +2,7 @@ package com.dgteam.callblocker;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -28,6 +29,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -88,38 +92,65 @@ public class BlackList extends Fragment {
         btAdd = view.findViewById(R.id.floatingActionButton4);
         fabContact = view.findViewById(R.id.fabPersonAdd);
         fabNumber = view.findViewById(R.id.fabNumber);
+
+        // Ẩn hiện 2 floating action button
         boolean[] kt = {true};
         btAdd.setImageResource(R.drawable.add);
-        btAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                kt[0] =!kt[0];
-                if (kt[0]) {
-                    btAdd.setImageResource(R.drawable.add);
-                    an();
-                }
-                else {
-                    btAdd.setImageResource(R.drawable.clear);
-                    hien();
-                }
+        btAdd.setOnClickListener(view1 -> {
+            kt[0] =!kt[0];
+            if (kt[0]) {
+                btAdd.setImageResource(R.drawable.add);
+                an();
+            }
+            else {
+                btAdd.setImageResource(R.drawable.clear);
+                hien();
             }
         });
         fabContact.setOnClickListener(view1 -> selectContact());
-        //fabNumber.setOnClickListener();
+        fabNumber.setOnClickListener(view1 -> buttonAddNumber());
         showRecyclerView(container);
         if (contactList.size()==7) Toast.makeText(getContext(),contactList.get(0).getName(),Toast.LENGTH_SHORT).show();
         return view;
     }
 
-
+    //Hiện 2 floating action button
     private void hien(){
         fabNumber.show();
         fabContact.show();
     }
 
+    //Ẩn 2 floating action button
     private void an(){
         fabContact.hide();
         fabNumber.hide();
+    }
+
+    //Tạo 1 dialog để nhập số trực tiếp từ bàn phím
+    private void buttonAddNumber(){
+        Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.add_number);
+
+        EditText etNumber = (EditText) dialog.findViewById(R.id.etNumber);
+        Button btAdd = (Button) dialog.findViewById(R.id.btAdd);
+
+
+
+        dialog.getWindow().setLayout(1300,850);
+
+
+        btAdd.setOnClickListener(view2 -> {
+            if (!etNumber.getText().toString().equals("")){
+                if (!isExistContact(etNumber.getText().toString())){
+                    contactList.add(new ContactItem(null,"No Name",etNumber.getText().toString(),
+                            BitmapFactory.decodeResource(getResources(),R.drawable.avatar)));
+                    contactAdapter.notifyDataSetChanged();
+                    dialog.dismiss();
+                }else Toast.makeText(getContext(),"Số điện thoại đã tồn tại", Toast.LENGTH_SHORT).show();
+            }else Toast.makeText(getContext(),"Vui lòng nhập số điện thoại", Toast.LENGTH_SHORT).show();
+        });
+        dialog.show();
     }
 
     //Xử lý RecyclerView
@@ -134,6 +165,10 @@ public class BlackList extends Fragment {
         recyclerView.setAdapter(contactAdapter);
     }
 
+    //Chọn 1 số từ danh bạ
+    //Sau đó trả về 1 Intent cho MainActivity
+    //Từ phương thức onActivityResult trong MainActivity
+    //Gọi trực tiếp phương thức onActivityResult trong fragment này
     public void selectContact() {
 
         Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
@@ -143,9 +178,13 @@ public class BlackList extends Fragment {
         }
     }
 
+
+    //Được gọi từ onActivityResult trong MainActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Context applicationContext = MainActivity.getContextOfApplication();
+
+        //Lấy ID, tên và số điện thoại từ danh bạ
         if (requestCode == REQUEST_SELECT_CONTACT && resultCode == RESULT_OK) {
             Uri contactUri = data.getData();
             Cursor cursor = applicationContext.getContentResolver().query(contactUri, null, null,
@@ -153,7 +192,7 @@ public class BlackList extends Fragment {
             if (cursor.moveToFirst()) {
                 String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 String hasPhone = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-                //Log.d("aaa", id + " " + hasPhone);
+
 
                 if (hasPhone.equalsIgnoreCase("1")) {
                     Cursor phone = applicationContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -171,20 +210,13 @@ public class BlackList extends Fragment {
                     photo = inputPhoto != null ? getCroppedBitmap(BitmapFactory.decodeStream(inputPhoto)) :
                              BitmapFactory.decodeResource(getResources(),R.drawable.avatar);
 
-                    boolean check = true;
 
+                    if (!isExistContact(number)) {
+                     contactList.add(0,new ContactItem(id, name, number, photo));
+                     contactAdapter.notifyDataSetChanged();
 
-                    for (ContactItem item: contactList)
-                        if (item.getNumber().equals(number)){
-                            check = false;
-                            break;
-                        }
-                        if (check) {
-                         contactList.add(0,new ContactItem(id, name, number, photo));
-                         contactAdapter.notifyDataSetChanged();
-
-                        }else
-                            Toast.makeText(getContext(),"Số điện thoại đã tồn tại",Toast.LENGTH_SHORT).show();
+                    }else
+                        Toast.makeText(getContext(),"Số điện thoại đã tồn tại",Toast.LENGTH_SHORT).show();
                 }else
                     Toast.makeText(getContext(),"Đối tượng không có số điện thoại",Toast.LENGTH_SHORT).show();
             }
@@ -192,6 +224,19 @@ public class BlackList extends Fragment {
 
     }
 
+    //Kiểm tra số đã tồn tại trong blacklist hay chưa
+    private boolean isExistContact(String number){
+
+        boolean check = false;
+        for (ContactItem item: contactList)
+            if (item.getNumber().equals(number)){
+                check = true;
+                break;
+            }
+        return check;
+    }
+
+    //Cắt hình từ vuông thành tròn
     public Bitmap getCroppedBitmap(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -211,7 +256,8 @@ public class BlackList extends Fragment {
         return output;
     }
 
-    public static InputStream openPhoto(long contactId) {
+    //Lấy hình từ danh bạ thông qua ID
+    private InputStream openPhoto(long contactId) {
         Context applicationContext = MainActivity.getContextOfApplication();
         Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
         Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);

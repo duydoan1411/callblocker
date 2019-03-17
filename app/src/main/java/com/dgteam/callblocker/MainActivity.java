@@ -61,31 +61,31 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         //Yêu cầu quyền đọc danh bạ
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(this);
-                alert.setIcon(R.drawable.warning_amber);
-                alert.setTitle("Cảnh báo!");
-                alert.setMessage("Ứng dụng sẽ không hoạt động nếu bạn không cấp quyền." +
-                        " Việc cấp quyền này là an toàn.");
-                alert.setPositiveButton("Đồng ý", (dialogInterface, i) ->
-                        permisson(Manifest.permission.READ_CONTACTS));
-                alert.setNegativeButton("Từ chối", (d,i) -> dialogQuit());
-                alert.setCancelable(false);
-                alert.show();
+                new AlertDialog.Builder(this)
+                .setIcon(R.drawable.warning_amber)
+                .setTitle("Cảnh báo!")
+                .setMessage("Ứng dụng sẽ không hoạt động nếu bạn không cấp quyền." +
+                        " Việc cấp quyền này là an toàn.")
+                .setPositiveButton("Đồng ý", (dialogInterface, i) ->
+                        permisson(Manifest.permission.READ_CONTACTS))
+                .setNegativeButton("Từ chối", (d,i) -> dialogQuit())
+                .setCancelable(false)
+                .show();
             }
         }
     }
     // Thoát ứng dụng
     public void dialogQuit(){
-        AlertDialog.Builder alert2 = new AlertDialog.Builder(MainActivity.this);
-        alert2.setTitle("Đóng ứng dụng");
-        alert2.setIcon(R.drawable.warning_amber);
-        alert2.setMessage("Ứng dụng sẽ đóng!");
-        alert2.setPositiveButton("Thoát", (dialogInterface, i) -> {
+        new AlertDialog.Builder(MainActivity.this)
+        .setTitle("Đóng ứng dụng")
+        .setIcon(R.drawable.warning_amber)
+        .setMessage("Ứng dụng sẽ đóng!")
+        .setPositiveButton("Thoát", (dialogInterface, i) -> {
             finish();
             System.exit(0);
-        });
-        alert2.setCancelable(false);
-        alert2.show();
+        })
+        .setCancelable(false)
+        .show();
     }
 
     //Yêu cầu quyền trên android 6.0+
@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         }
     }
 
+    //Tạo ViewPager
     private void setViewPager(){
         adapter = new VPAdapter(getSupportFragmentManager());
         blackList = new BlackList();
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
     }
 
 
-
+    //Gọi phương thức onActivityResult trong fragment BlackList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         adapter.getItem(0).onActivityResult(requestCode,resultCode,data);
