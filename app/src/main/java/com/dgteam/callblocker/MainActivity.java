@@ -26,14 +26,22 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements BlackList.OnFragmentInteractionListener, BlockLogs.OnFragmentInteractionListener{
+
+
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    //static final int REQUEST_SELECT_CONTACT = 1;
     private BlackList blackList;
     private BlockLogs blockLogs;
     private VPAdapter adapter;
+
 
     public static Context contextOfApplication;
     public static Context getContextOfApplication()
@@ -58,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         contextOfApplication = getApplicationContext();
 
 
+
+
         //Yêu cầu quyền đọc danh bạ
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
@@ -74,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
             }
         }
     }
+
+
     // Thoát ứng dụng
     public void dialogQuit(){
         new AlertDialog.Builder(MainActivity.this)
@@ -113,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
 
     //Tạo ViewPager
     private void setViewPager(){
+
         adapter = new VPAdapter(getSupportFragmentManager());
         blackList = new BlackList();
         blockLogs = new BlockLogs();

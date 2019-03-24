@@ -45,6 +45,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                 if (isLongClick){
                     contactList.remove(position);
                     notifyItemRemoved(position);
+
                 }
             }
         });

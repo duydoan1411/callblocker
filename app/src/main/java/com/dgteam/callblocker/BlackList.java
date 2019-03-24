@@ -35,9 +35,22 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
@@ -48,6 +61,7 @@ public class BlackList extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public static final int REQUEST_SELECT_CONTACT = 1;
+    private static final String blackList = "black_list.dat";
 
     private RecyclerView recyclerView;
     private FloatingActionButton btAdd, fabContact, fabNumber;
@@ -55,12 +69,12 @@ public class BlackList extends Fragment {
     private ContactAdapter contactAdapter;
 
     private String mParam1;
-    //
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
     public BlackList() {
+
     }
 
 
@@ -81,6 +95,7 @@ public class BlackList extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        readContact();
     }
 
     @Override
@@ -113,6 +128,7 @@ public class BlackList extends Fragment {
         showRecyclerView(container);
         if (contactList.size()==7) Toast.makeText(getContext(),contactList.get(0).getName(),Toast.LENGTH_SHORT).show();
         return view;
+
     }
 
     //Hiện 2 floating action button
@@ -147,6 +163,7 @@ public class BlackList extends Fragment {
                     contactList.add(new ContactItem(null,"No Name",etNumber.getText().toString(),
                             BitmapFactory.decodeResource(getResources(),R.drawable.avatar)));
                     contactAdapter.notifyDataSetChanged();
+                    writeContact();
                     dialog.dismiss();
                 }else Toast.makeText(getContext(),"Số điện thoại đã tồn tại", Toast.LENGTH_SHORT).show();
             }else Toast.makeText(getContext(),"Vui lòng nhập số điện thoại", Toast.LENGTH_SHORT).show();
@@ -215,6 +232,7 @@ public class BlackList extends Fragment {
                     if (!isExistContact(number)) {
                      contactList.add(0,new ContactItem(id, name, number, photo));
                      contactAdapter.notifyDataSetChanged();
+                     writeContact();
 
                     }else
                         Toast.makeText(getContext(),"Số điện thoại đã tồn tại",Toast.LENGTH_SHORT).show();
@@ -223,6 +241,48 @@ public class BlackList extends Fragment {
             }
         }
 
+    }
+
+    public void writeContact(){
+        try {
+            FileOutputStream fileOut = (FileOutputStream) MainActivity.getContextOfApplication()
+                    .openFileOutput(blackList,Context.MODE_PRIVATE);
+            ObjectOutputStream outputStream = new ObjectOutputStream(fileOut);
+            for(ContactItem i: contactList)
+                outputStream.writeObject(i);
+            outputStream.close();
+            fileOut.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readContact(){
+        try {
+            FileInputStream fileIn = MainActivity.getContextOfApplication()
+                    .openFileInput(blackList);
+            ObjectInputStream inputStream = new ObjectInputStream(fileIn);
+
+            ContactItem contact;
+            contactList = new ArrayList<ContactItem>();
+
+            while ((contact = (ContactItem) inputStream.readObject())!= null){
+                contactList.add(contact);
+                Log.d("aaa", "readContact: "+contact.toString());
+            }
+
+            fileIn.close();
+            inputStream.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     //Kiểm tra số đã tồn tại trong blacklist hay chưa

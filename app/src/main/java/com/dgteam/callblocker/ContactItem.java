@@ -1,25 +1,35 @@
 package com.dgteam.callblocker;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
-public class ContactItem {
+import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
+
+public class ContactItem implements Serializable {
 
     private String number, name, id;
-    private Bitmap avatar;
+    private byte[] avatar;
 
     public ContactItem(String id,String name, String number, Bitmap avatar) {
         this.id = id;
         this.number = number;
         this.name = name;
-        this.avatar = avatar;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        avatar.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        this.avatar = stream.toByteArray();
     }
 
     public Bitmap getAvatar() {
-        return avatar;
+        Bitmap image = BitmapFactory.decodeByteArray(avatar,
+                0, avatar.length);
+        return image;
     }
 
     public void setAvatar(Bitmap avatar) {
-        this.avatar = avatar;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        avatar.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        this.avatar = stream.toByteArray();
     }
 
     public String getNumber() {
@@ -36,5 +46,15 @@ public class ContactItem {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "ContactItem{" +
+                "number='" + number + '\'' +
+                ", name='" + name + '\'' +
+                ", id='" + id + '\'' +
+                ", avatar=" + avatar +
+                '}';
     }
 }
