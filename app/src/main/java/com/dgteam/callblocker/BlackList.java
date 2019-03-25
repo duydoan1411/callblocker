@@ -61,11 +61,11 @@ public class BlackList extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public static final int REQUEST_SELECT_CONTACT = 1;
-    private static final String blackList = "black_list.dat";
+    public static final String blackList = "black_list.dat";
 
     private RecyclerView recyclerView;
     private FloatingActionButton btAdd, fabContact, fabNumber;
-    private ArrayList<ContactItem> contactList = new ArrayList<>();
+    protected static ArrayList<ContactItem> contactList = new ArrayList<ContactItem>();
     private ContactAdapter contactAdapter;
 
     private String mParam1;
@@ -74,7 +74,6 @@ public class BlackList extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     public BlackList() {
-
     }
 
 
@@ -90,12 +89,13 @@ public class BlackList extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        readContact();
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        readContact();
+
     }
 
     @Override
@@ -126,7 +126,6 @@ public class BlackList extends Fragment {
         fabContact.setOnClickListener(view1 -> selectContact());
         fabNumber.setOnClickListener(view1 -> buttonAddNumber());
         showRecyclerView(container);
-        if (contactList.size()==7) Toast.makeText(getContext(),contactList.get(0).getName(),Toast.LENGTH_SHORT).show();
         return view;
 
     }
@@ -160,7 +159,7 @@ public class BlackList extends Fragment {
         btAdd.setOnClickListener(view2 -> {
             if (!etNumber.getText().toString().equals("")){
                 if (!isExistContact(etNumber.getText().toString())){
-                    contactList.add(new ContactItem(null,"No Name",etNumber.getText().toString(),
+                    contactList.add(0,new ContactItem(null,"No Name",etNumber.getText().toString(),
                             BitmapFactory.decodeResource(getResources(),R.drawable.avatar)));
                     contactAdapter.notifyDataSetChanged();
                     writeContact();
@@ -243,7 +242,7 @@ public class BlackList extends Fragment {
 
     }
 
-    public void writeContact(){
+    public static void writeContact(){
         try {
             FileOutputStream fileOut = (FileOutputStream) MainActivity.getContextOfApplication()
                     .openFileOutput(blackList,Context.MODE_PRIVATE);
@@ -270,7 +269,6 @@ public class BlackList extends Fragment {
 
             while ((contact = (ContactItem) inputStream.readObject())!= null){
                 contactList.add(contact);
-                Log.d("aaa", "readContact: "+contact.toString());
             }
 
             fileIn.close();

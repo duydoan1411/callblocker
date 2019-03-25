@@ -13,6 +13,7 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -63,25 +64,35 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         tabLayout.getTabAt(0).setIcon(R.drawable.locklogs_icon);
         tabLayout.getTabAt(1).setIcon(R.drawable.blacklist_icon);
 
+
+
+
         contextOfApplication = getApplicationContext();
-
-
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {
+                Manifest.permission.READ_CONTACTS,
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.READ_CALL_LOG,
+                Manifest.permission.CALL_PHONE
+        };
 
 
         //Yêu cầu quyền đọc danh bạ
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            if(!hasPermissions(this, PERMISSIONS)) {
                 new AlertDialog.Builder(this)
                 .setIcon(R.drawable.warning_amber)
                 .setTitle("Cảnh báo!")
                 .setMessage("Ứng dụng sẽ không hoạt động nếu bạn không cấp quyền." +
                         " Việc cấp quyền này là an toàn.")
-                .setPositiveButton("Đồng ý", (dialogInterface, i) ->
-                        permisson(Manifest.permission.READ_CONTACTS))
+                .setPositiveButton("Đồng ý", (dialogInterface, i) ->{
+                    ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+                })
                 .setNegativeButton("Từ chối", (d,i) -> dialogQuit())
                 .setCancelable(false)
                 .show();
             }
+
         }
     }
 
@@ -100,26 +111,38 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         .show();
     }
 
-    //Yêu cầu quyền trên android 6.0+
-    public void permisson(String permissonName){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            if (checkSelfPermission(permissonName) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{permissonName}, 1);
-
+    //Kiểm tra quyền trên android 6.0+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
             }
         }
+        return true;
     }
 
     //Kiểm tra xem có chấp nhận quyền không
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 1) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            } else {
-                dialogQuit();
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0){
+                    for (int i: grantResults){
+                        if(i == PackageManager.PERMISSION_DENIED){
+                            dialogQuit();
+                            break;
+                        }
+                    }
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    dialogQuit();
+                }
+
             }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
