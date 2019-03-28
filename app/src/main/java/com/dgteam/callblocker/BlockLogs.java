@@ -52,14 +52,7 @@ public class BlockLogs extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_block_logs, container, false);
 
-        Button bt = view.findViewById(R.id.buttonB);
 
-        bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
 
 
         return view;

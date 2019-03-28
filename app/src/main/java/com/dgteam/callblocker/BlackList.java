@@ -16,6 +16,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -70,6 +71,7 @@ public class BlackList extends Fragment {
 
     private String mParam1;
     private String mParam2;
+    private boolean[] kt = {false};
 
     private OnFragmentInteractionListener mListener;
 
@@ -98,52 +100,57 @@ public class BlackList extends Fragment {
 
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         ///Ánh xạ các view
         View view = inflater.inflate(R.layout.fragment_black_list,container,false);
-        recyclerView = view.findViewById(R.id.recyclerViewBalckList);
-        btAdd = view.findViewById(R.id.floatingActionButton4);
-        fabContact = view.findViewById(R.id.fabPersonAdd);
-        fabNumber = view.findViewById(R.id.fabNumber);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewBalckList);
+        btAdd = (FloatingActionButton) view.findViewById(R.id.floatingActionButton4);
+        fabContact = (FloatingActionButton) view.findViewById(R.id.fabPersonAdd);
+        fabNumber = (FloatingActionButton) view.findViewById(R.id.fabNumber);
 
         // Ẩn hiện 2 floating action button
-        boolean[] kt = {true};
+
         btAdd.setImageResource(R.drawable.add);
         btAdd.setOnClickListener(view1 -> {
-            kt[0] =!kt[0];
             if (kt[0]) {
-                btAdd.setImageResource(R.drawable.add);
                 an();
             }
             else {
-                btAdd.setImageResource(R.drawable.clear);
                 hien();
             }
         });
         fabContact.setOnClickListener(view1 -> selectContact());
         fabNumber.setOnClickListener(view1 -> buttonAddNumber());
         showRecyclerView(container);
+
         return view;
 
     }
 
     //Hiện 2 floating action button
     private void hien(){
+        kt[0] =!kt[0];
+        btAdd.setImageResource(R.drawable.clear);
         fabNumber.show();
         fabContact.show();
     }
 
     //Ẩn 2 floating action button
     private void an(){
+        btAdd.setImageResource(R.drawable.add);
+        kt[0] =!kt[0];
         fabContact.hide();
         fabNumber.hide();
     }
 
     //Tạo 1 dialog để nhập số trực tiếp từ bàn phím
     private void buttonAddNumber(){
+        an();
         Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.add_number);
@@ -153,8 +160,8 @@ public class BlackList extends Fragment {
 
 
 
-        dialog.getWindow().setLayout(1300,850);
-
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         btAdd.setOnClickListener(view2 -> {
             if (!etNumber.getText().toString().equals("")){
@@ -187,7 +194,7 @@ public class BlackList extends Fragment {
     //Từ phương thức onActivityResult trong MainActivity
     //Gọi trực tiếp phương thức onActivityResult trong fragment này
     public void selectContact() {
-
+        an();
         Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {

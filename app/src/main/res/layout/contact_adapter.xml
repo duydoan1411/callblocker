@@ -14,15 +14,17 @@
         tools:srcCompat="@tools:sample/avatars[0]" />
 
     <LinearLayout
+        android:layout_weight="13"
         android:layout_height="50dp"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/tvName"
             android:gravity="bottom"
             android:paddingLeft="30dp"
-            android:text=""
+            android:text="No Name"
+            android:textColor="#f000"
             android:textStyle="bold"
             android:textSize="20sp"
             android:layout_weight="1"
@@ -41,4 +43,13 @@
             android:layout_height="0dp" />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imDelete"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/trash_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
 </LinearLayout>

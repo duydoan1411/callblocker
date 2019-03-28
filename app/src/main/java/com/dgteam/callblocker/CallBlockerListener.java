@@ -61,7 +61,7 @@ public class CallBlockerListener extends BroadcastReceiver {
 
                                     if ((number != null)) {
                                         telephonyService.endCall();
-                                        Toast.makeText(context, "Ending the call from: " + number, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, "Đã chặn cuộc gọi từ: " + number, Toast.LENGTH_LONG).show();
                                     }
 
                                 } catch (NoSuchMethodException e) {
@@ -73,17 +73,7 @@ public class CallBlockerListener extends BroadcastReceiver {
                                 } catch (InvocationTargetException e) {
                                     e.printStackTrace();
                                 }
-
-                                Toast.makeText(context, "Ring " + number, Toast.LENGTH_SHORT).show();
-
                             }
-                            if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_OFFHOOK)){
-                                Toast.makeText(context, "Answered " + number, Toast.LENGTH_SHORT).show();
-                            }
-                            if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_IDLE)){
-                                Toast.makeText(context, "Idle "+ number, Toast.LENGTH_SHORT).show();
-                            }
-
                             break;
                     }
                 }
