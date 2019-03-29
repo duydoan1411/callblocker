@@ -1,12 +1,14 @@
 package com.dgteam.callblocker;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
@@ -16,16 +18,21 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telecom.TelecomManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -63,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.locklogs_icon);
         tabLayout.getTabAt(1).setIcon(R.drawable.blacklist_icon);
+        setTitle("Chặn cuộc gọi");
 
 
 
@@ -80,17 +88,18 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         //Yêu cầu quyền đọc danh bạ
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if(!hasPermissions(this, PERMISSIONS)) {
+
                 new AlertDialog.Builder(this)
-                .setIcon(R.drawable.warning_amber)
-                .setTitle("Cảnh báo!")
-                .setMessage("Ứng dụng sẽ không hoạt động nếu bạn không cấp quyền." +
-                        " Việc cấp quyền này là an toàn.")
-                .setPositiveButton("Đồng ý", (dialogInterface, i) ->{
-                    ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-                })
-                .setNegativeButton("Từ chối", (d,i) -> dialogQuit())
-                .setCancelable(false)
-                .show();
+                    .setIcon(R.drawable.warning_amber)
+                    .setTitle("Cảnh báo!")
+                    .setMessage("Ứng dụng sẽ không hoạt động nếu bạn không cấp quyền." +
+                            " Việc cấp quyền này là an toàn.")
+                    .setPositiveButton("Đồng ý", (dialogInterface, i) ->{
+                        ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+                    })
+                    .setNegativeButton("Từ chối", (d,i) -> dialogQuit())
+                    .setCancelable(false)
+                    .show();
             }
 
         }
@@ -152,8 +161,8 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         adapter = new VPAdapter(getSupportFragmentManager());
         blackList = new BlackList();
         blockLogs = new BlockLogs();
-        adapter.add(blackList,"Blacklist");
-        adapter.add(blockLogs,"Block Logs");
+        adapter.add(blackList,"Danh sách đen");
+        adapter.add(blockLogs,"Nhật kí chặn");
         viewPager.setAdapter(adapter);
 
     }
@@ -174,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.menu_setting, menu);
+        //getMenuInflater().inflate(R.menu.menu_setting, menu);
 
         return super.onCreateOptionsMenu(menu);
     }

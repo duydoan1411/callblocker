@@ -9,27 +9,15 @@
 
     <TextView
         android:layout_marginTop="20dp"
-        android:id="@+id/tvTitle"
+        android:id="@+id/tvMessage"
         android:textColor="#000000"
+        android:textSize="15sp"
+        android:layout_marginLeft="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="25sp"
-        android:text="Thêm số điện thoại" />
+        android:text="Text" />
 
-    <EditText
-        android:layout_marginTop="20dp"
-        android:id="@+id/etNumber"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:textColor="#000000"
-        android:hint="Nhập số điện thoại"
-        android:textSize="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="phone" />
+
 
     <LinearLayout
         android:layout_marginTop="10dp"
@@ -48,16 +36,16 @@
             android:text="Hủy"
             android:textColor="#4CAF50"
             android:background="@android:color/transparent"
-            android:id="@+id/btCancel"
+            android:id="@+id/btDegree"
             android:textStyle="bold"
             android:layout_width="70dp"
             android:layout_height="50dp"/>
 
         <Button
-            android:text="Thêm"
+            android:text="Đồng ý"
             android:textColor="#4CAF50"
             android:background="@android:color/transparent"
-            android:id="@+id/btAdd"
+            android:id="@+id/btAgree"
             android:textStyle="bold"
             android:layout_width="70dp"
             android:layout_height="50dp"/>

@@ -20,13 +20,16 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +38,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -65,6 +70,7 @@ public class BlackList extends Fragment {
     public static final String blackList = "black_list.dat";
 
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout refreshLayout;
     private FloatingActionButton btAdd, fabContact, fabNumber;
     protected static ArrayList<ContactItem> contactList = new ArrayList<ContactItem>();
     private ContactAdapter contactAdapter;
@@ -112,6 +118,19 @@ public class BlackList extends Fragment {
         btAdd = (FloatingActionButton) view.findViewById(R.id.floatingActionButton4);
         fabContact = (FloatingActionButton) view.findViewById(R.id.fabPersonAdd);
         fabNumber = (FloatingActionButton) view.findViewById(R.id.fabNumber);
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
+
+        refreshLayout.setOnRefreshListener( () -> {
+            readContact();
+            contactAdapter.notifyDataSetChanged();
+            //Toast.makeText(container.getContext(), "Làm tươi danh sách đen", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    refreshLayout.setRefreshing(false);
+                }
+            }, 2000);
+        });
 
         // Ẩn hiện 2 floating action button
 
@@ -151,17 +170,17 @@ public class BlackList extends Fragment {
     //Tạo 1 dialog để nhập số trực tiếp từ bàn phím
     private void buttonAddNumber(){
         an();
-        Dialog dialog = new Dialog(getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.add_number);
+        BlurPopupWindow dialog = new BlurPopupWindow.Builder(getContext())
+                .setContentView(R.layout.add_number)
+                .setGravity(Gravity.CENTER)
+                .setScaleRatio(0.2f)
+                .setBlurRadius(15)
+                .setTintColor(0x30000000)
+                .build();
 
         EditText etNumber = (EditText) dialog.findViewById(R.id.etNumber);
         Button btAdd = (Button) dialog.findViewById(R.id.btAdd);
-
-
-
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        Button btCancel = (Button) dialog.findViewById(R.id.btCancel);
 
         btAdd.setOnClickListener(view2 -> {
             if (!etNumber.getText().toString().equals("")){
@@ -175,7 +194,10 @@ public class BlackList extends Fragment {
             }else Toast.makeText(getContext(),"Vui lòng nhập số điện thoại", Toast.LENGTH_SHORT).show();
         });
         dialog.show();
+        btCancel.setOnClickListener(v -> dialog.dismiss());
+
     }
+
 
     //Xử lý RecyclerView
     public void showRecyclerView(ViewGroup container){
@@ -183,9 +205,11 @@ public class BlackList extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(),
                 LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(container.getContext(),layoutManager.getOrientation()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(container.getContext(), 0));
+        //recyclerView.addItemDecoration(new DividerItemDecoration(container.getContext(),layoutManager.getOrientation()));
         contactAdapter = new ContactAdapter(contactList,R.layout.contact_adapter,
                 container.getContext());
+
         recyclerView.setAdapter(contactAdapter);
     }
 

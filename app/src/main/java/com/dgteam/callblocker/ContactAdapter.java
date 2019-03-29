@@ -5,16 +5,15 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-//import android.widget.Toast;
+
+import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
 import java.util.List;
 
@@ -45,22 +44,34 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         viewHolder.imAvatar.setImageBitmap(contactList.get(i).getAvatar());
 
         viewHolder.imDetele.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                    .setMessage("Bạn có chắc chắn muốn xóa?")
-                    .setPositiveButton("Xóa",(dialog, which) -> {
-                        contactList.remove(i);
-                        notifyDataSetChanged();
-                        BlackList.writeContact();
-                    })
-                    .setNegativeButton("Hủy",null)
-                    .setCancelable(false);
-            AlertDialog dialog = builder.create();
-            dialog.show();
-            Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            BlurPopupWindow dialog = new BlurPopupWindow.Builder(context)
+                    .setContentView(R.layout.dialog)
+                    .setGravity(Gravity.CENTER)
+                    .setScaleRatio(0.2f)
+                    .setBlurRadius(15)
+                    .setTintColor(0x30000000)
+                    .setAnimationDuration(300)
+                    .setDismissOnClickBack(false)
+                    .setDismissOnTouchBackground(false)
+                    .build();
+            TextView message = (TextView) dialog.findViewById(R.id.tvMessage);
+            Button agree = (Button) dialog.findViewById(R.id.btAgree);
+            Button degree = (Button) dialog.findViewById(R.id.btDegree);
 
-            positiveButton.setTextColor(Color.parseColor("#FF0000"));
-            negativeButton.setTextColor(Color.parseColor("#FF0000"));
+            message.setText("Bạn có chắc chắn muốn xóa?");
+            agree.setText("Xóa");
+            agree.setTextColor(Color.parseColor("#FF0000"));
+            agree.setOnClickListener(v1 -> {
+                contactList.remove(i);
+                notifyDataSetChanged();
+                BlackList.writeContact();
+                dialog.dismiss();
+            });
+            degree.setTextColor(Color.parseColor("#FF0000"));
+            degree.setText("Hủy");
+            degree.setOnClickListener(v1 -> dialog.dismiss());
+            dialog.show();
+
         });
     }
 
