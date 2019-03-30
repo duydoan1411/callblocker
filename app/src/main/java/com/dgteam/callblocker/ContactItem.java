@@ -15,15 +15,25 @@ public class ContactItem implements Serializable {
         this.id = id;
         this.number = number;
         this.name = name;
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        avatar.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        this.avatar = stream.toByteArray();
+        if(avatar!=null) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            avatar.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            this.avatar = stream.toByteArray();
+        }
+
+    }
+    public ContactItem(){
+
     }
 
     public Bitmap getAvatar() {
-        Bitmap image = BitmapFactory.decodeByteArray(avatar,
-                0, avatar.length);
-        return image;
+        if (this.avatar!=null) {
+            Bitmap image = BitmapFactory.decodeByteArray(avatar,
+                    0, avatar.length);
+
+            return image;
+        }
+        return null;
     }
 
     public void setAvatar(Bitmap avatar) {
@@ -34,6 +44,14 @@ public class ContactItem implements Serializable {
 
     public String getNumber() {
         return number;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setNumber(String number) {
@@ -54,7 +72,6 @@ public class ContactItem implements Serializable {
                 "number='" + number + '\'' +
                 ", name='" + name + '\'' +
                 ", id='" + id + '\'' +
-                ", avatar=" + avatar +
                 '}';
     }
 }

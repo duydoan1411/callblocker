@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 public class LogHeaderViewHolder extends RecyclerView.ViewHolder {
 
-    private TextView header;
+    TextView header;
 
     public LogHeaderViewHolder(@NonNull View itemView) {
         super(itemView);

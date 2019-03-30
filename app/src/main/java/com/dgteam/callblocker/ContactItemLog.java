@@ -1,49 +1,29 @@
 package com.dgteam.callblocker;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
-public class ContactItemLog implements Serializable {
+public class ContactItemLog extends ContactItem implements Serializable{
 
-    private String number, name, id, dateLog, hourLog;
-    private byte[] avatar;
+    private String dateLog, hourLog, header;
 
     public ContactItemLog(String id, String name, String number, Bitmap avatar) {
-        this.id = id;
-        this.number = number;
-        this.name = name;
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        avatar.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        this.avatar = stream.toByteArray();
+        super(id, name, number, avatar);
         Date date = new Date();
-        dateLog = new SimpleDateFormat("dd/MM/yyyy").format(date)+"";
-        hourLog = new SimpleDateFormat("HH:mm:ss").format(date)+"";
+        dateLog = new SimpleDateFormat("dd/MM/yyyy").format(date);
+        hourLog = new SimpleDateFormat("HH:mm:ss").format(date);
     }
-
-    public Bitmap getAvatar() {
-        Bitmap image = BitmapFactory.decodeByteArray(avatar,
-                0, avatar.length);
-        return image;
+    public ContactItemLog(String header){
+        super(null,null,null,null);
+        this.header = header;
+        dateLog = header;
     }
+    public ContactItemLog(){
 
-    public void setAvatar(Bitmap avatar) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        avatar.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        this.avatar = stream.toByteArray();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getDateLog() {
@@ -62,31 +42,22 @@ public class ContactItemLog implements Serializable {
         this.hourLog = hourLog;
     }
 
-    public String getNumber() {
-        return number;
+    public String getHeader() {
+        return header;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setHeader(String header) {
+        this.header = header;
     }
 
     @Override
     public String toString() {
         return "ContactItemLog{" +
-                "number='" + number + '\'' +
-                ", name='" + name + '\'' +
-                ", id='" + id + '\'' +
+                "number='" + getNumber() + '\'' +
+                ", name='" + getName() + '\'' +
+                ", id='" + getId() + '\'' +
                 ", dateLog='" + dateLog + '\'' +
                 ", hourLog='" + hourLog + '\'' +
-                ", avatar=" + Arrays.toString(avatar) +
                 '}';
     }
 }

@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 public class LogItemViewHolder extends RecyclerView.ViewHolder {
 
-    private ImageView ivAvatar, imDelete;
-    private TextView tvName, tvNumber, tvTime;
+    ImageView ivAvatar, imDelete;
+    TextView tvName, tvNumber, tvTime;
 
     public LogItemViewHolder(@NonNull View itemView) {
         super(itemView);

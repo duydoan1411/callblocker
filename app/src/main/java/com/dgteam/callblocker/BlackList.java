@@ -67,7 +67,7 @@ public class BlackList extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public static final int REQUEST_SELECT_CONTACT = 1;
-    public static final String blackList = "black_list.dat";
+    private static final String BLACK_LIST = "black_list.dat";
 
     private RecyclerView recyclerView;
     private SwipeRefreshLayout refreshLayout;
@@ -118,19 +118,6 @@ public class BlackList extends Fragment {
         btAdd = (FloatingActionButton) view.findViewById(R.id.floatingActionButton4);
         fabContact = (FloatingActionButton) view.findViewById(R.id.fabPersonAdd);
         fabNumber = (FloatingActionButton) view.findViewById(R.id.fabNumber);
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
-
-        refreshLayout.setOnRefreshListener( () -> {
-            readContact();
-            contactAdapter.notifyDataSetChanged();
-            //Toast.makeText(container.getContext(), "Làm tươi danh sách đen", Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    refreshLayout.setRefreshing(false);
-                }
-            }, 2000);
-        });
 
         // Ẩn hiện 2 floating action button
 
@@ -187,8 +174,9 @@ public class BlackList extends Fragment {
                 if (!isExistContact(etNumber.getText().toString())){
                     contactList.add(0,new ContactItem(null,"No Name",etNumber.getText().toString(),
                             BitmapFactory.decodeResource(getResources(),R.drawable.avatar)));
-                    contactAdapter.notifyDataSetChanged();
+
                     writeContact();
+                    contactAdapter.notifyDataSetChanged();
                     dialog.dismiss();
                 }else Toast.makeText(getContext(),"Số điện thoại đã tồn tại", Toast.LENGTH_SHORT).show();
             }else Toast.makeText(getContext(),"Vui lòng nhập số điện thoại", Toast.LENGTH_SHORT).show();
@@ -206,7 +194,6 @@ public class BlackList extends Fragment {
                 LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(container.getContext(), 0));
-        //recyclerView.addItemDecoration(new DividerItemDecoration(container.getContext(),layoutManager.getOrientation()));
         contactAdapter = new ContactAdapter(contactList,R.layout.contact_adapter,
                 container.getContext());
 
@@ -276,7 +263,7 @@ public class BlackList extends Fragment {
     public static void writeContact(){
         try {
             FileOutputStream fileOut = (FileOutputStream) MainActivity.getContextOfApplication()
-                    .openFileOutput(blackList,Context.MODE_PRIVATE);
+                    .openFileOutput(BLACK_LIST,Context.MODE_PRIVATE);
             ObjectOutputStream outputStream = new ObjectOutputStream(fileOut);
             for(ContactItem i: contactList)
                 outputStream.writeObject(i);
@@ -292,11 +279,11 @@ public class BlackList extends Fragment {
     private void readContact(){
         try {
             FileInputStream fileIn = MainActivity.getContextOfApplication()
-                    .openFileInput(blackList);
+                    .openFileInput(BLACK_LIST);
             ObjectInputStream inputStream = new ObjectInputStream(fileIn);
 
             ContactItem contact;
-            contactList = new ArrayList<ContactItem>();
+            contactList.clear();
 
             while ((contact = (ContactItem) inputStream.readObject())!= null){
                 contactList.add(contact);

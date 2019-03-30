@@ -1,44 +1,20 @@
 package com.dgteam.callblocker;
 
 import android.Manifest;
-import android.app.ActionBar;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telecom.TelecomManager;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements BlackList.OnFragmentInteractionListener, BlockLogs.OnFragmentInteractionListener{
 
@@ -73,8 +49,6 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         setTitle("Chặn cuộc gọi");
 
 
-
-
         contextOfApplication = getApplicationContext();
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {
@@ -89,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if(!hasPermissions(this, PERMISSIONS)) {
 
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this,R.style.AlertDialogStyle)
                     .setIcon(R.drawable.warning_amber)
                     .setTitle("Cảnh báo!")
                     .setMessage("Ứng dụng sẽ không hoạt động nếu bạn không cấp quyền." +
@@ -104,7 +78,9 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
 
         }
     }
-
+    public void dataChanged() {
+        viewPager.getAdapter().notifyDataSetChanged();
+    }
 
     // Thoát ứng dụng
     public void dialogQuit(){
