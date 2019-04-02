@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".BlackList">
     <android.support.v7.widget.RecyclerView
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/recyclerViewBalckList"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
@@ -17,39 +18,39 @@
         android:id="@+id/floatingActionButton4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_marginBottom="20dp"
         android:clickable="true"
         app:backgroundTint="#4CAF50"
         app:layout_anchor="@id/recyclerViewBalckList"
-        app:layout_anchorGravity="bottom|right" />
+        app:layout_anchorGravity="bottom|center" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabPersonAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/fabNumber"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="90dp"
+        android:layout_marginBottom="80dp"
+        android:layout_marginRight="220dp"
         android:clickable="true"
         android:src="@drawable/person_add"
         android:visibility="invisible"
         app:backgroundTint="#FFEB3B"
-        app:layout_anchor="@id/floatingActionButton4"
-        app:layout_anchorGravity="top|right"
+        app:layout_anchor="@+id/floatingActionButton4"
+        app:layout_anchorGravity="left|top"
         tools:srcCompat="@tools:sample/avatars" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabNumber"
-        app:layout_anchor="@id/fabPersonAdd"
-        app:layout_anchorGravity="top|right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:backgroundTint="#FF9800"
-        android:src="@drawable/add_number"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="160dp"
-        android:visibility="invisible"
+        android:layout_marginBottom="80dp"
+        android:layout_marginLeft="220dp"
         android:clickable="true"
+        android:src="@drawable/add_number"
+        android:visibility="invisible"
+        app:backgroundTint="#FF9800"
+        app:layout_anchor="@+id/floatingActionButton4"
+        app:layout_anchorGravity="right|top"
         tools:srcCompat="@tools:sample/avatars" />
 
 

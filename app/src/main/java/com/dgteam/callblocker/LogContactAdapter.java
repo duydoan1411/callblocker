@@ -3,6 +3,7 @@ package com.dgteam.callblocker;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 
 import android.view.Gravity;
@@ -25,12 +26,13 @@ public class LogContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private static final int TYPE_ITEM = 1;
     private List<ContactItemLog> contactItemLogList;
     private Context context;
+    private View view;
 
 
-    public LogContactAdapter(List<ContactItemLog> contactItemLogList, Context context) {
+    public LogContactAdapter(List<ContactItemLog> contactItemLogList, Context context, View view) {
         this.contactItemLogList = contactItemLogList;
         this.context = context;
-
+        this.view = view;
     }
 
     @NonNull
@@ -89,11 +91,25 @@ public class LogContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 agree.setText("Xóa");
                 agree.setTextColor(Color.parseColor("#FF0000"));
                 agree.setOnClickListener(v1 -> {
+                    ContactItemLog backup = contactItemLogList.get(i);
                     contactItemLogList.remove(i);
                     BlockLogs.checkLogs();
                     notifyDataSetChanged();
                     BlockLogs.writeLogs();
                     dialog.dismiss();
+                    Snackbar.make(view,"Bạn đã xóa thành công",Snackbar.LENGTH_LONG)
+                            .setAction("Hoàn tác",v2 -> {
+                                if (contactItemLogList.isEmpty())
+                                {
+                                    BlockLogs.addList(backup);
+                                }else if(i>=contactItemLogList.size()) {
+                                    contactItemLogList.add(backup);
+                                }else
+                                    contactItemLogList.add(i,backup);
+                                BlockLogs.checkLogs();
+                                notifyDataSetChanged();
+                                BlockLogs.writeLogs();
+                            }).show();
                 });
                 degree.setTextColor(Color.parseColor("#FF0000"));
                 degree.setText("Hủy");

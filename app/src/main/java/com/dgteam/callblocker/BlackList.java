@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -132,7 +133,7 @@ public class BlackList extends Fragment {
         });
         fabContact.setOnClickListener(view1 -> selectContact());
         fabNumber.setOnClickListener(view1 -> buttonAddNumber());
-        showRecyclerView(container);
+        showRecyclerView(container,view);
 
         return view;
 
@@ -188,14 +189,14 @@ public class BlackList extends Fragment {
 
 
     //Xử lý RecyclerView
-    public void showRecyclerView(ViewGroup container){
+    public void showRecyclerView(ViewGroup container, View view){
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(),
                 LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(container.getContext(), 0));
         contactAdapter = new ContactAdapter(contactList,R.layout.contact_adapter,
-                container.getContext());
+                container.getContext(),view);
 
         recyclerView.setAdapter(contactAdapter);
     }
@@ -252,9 +253,11 @@ public class BlackList extends Fragment {
                      writeContact();
 
                     }else
-                        Toast.makeText(getContext(),"Số điện thoại đã tồn tại",Toast.LENGTH_SHORT).show();
+                        Snackbar.make(getView(),"Số điện thoại đã tồn tại",Snackbar.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(),"Số điện thoại đã tồn tại",Toast.LENGTH_SHORT).show();
                 }else
-                    Toast.makeText(getContext(),"Đối tượng không có số điện thoại",Toast.LENGTH_SHORT).show();
+                    Snackbar.make(getView(),"Đối tượng không có số điện thoại",Snackbar.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(),"Đối tượng không có số điện thoại",Toast.LENGTH_SHORT).show();
             }
         }
 

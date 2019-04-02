@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -11,19 +12,31 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.ogaclejapan.smarttablayout.SmartTabIndicationInterpolator;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 public class MainActivity extends AppCompatActivity implements BlackList.OnFragmentInteractionListener, BlockLogs.OnFragmentInteractionListener{
 
 
 
-    private TabLayout tabLayout;
+    private SmartTabLayout tabLayout;
     private ViewPager viewPager;
     private BlackList blackList;
     private BlockLogs blockLogs;
+    private Toolbar toolbar;
+    private DrawerLayout drawer;
     private VPAdapter adapter;
 
 
@@ -38,14 +51,50 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        tabLayout = (TabLayout) findViewById(R.id.tabLayout1);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        tabLayout = (SmartTabLayout) findViewById(R.id.tabLayout1);
         viewPager = (ViewPager) findViewById(R.id.viewPager1);
 
         setViewPager();
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setIcon(R.drawable.locklogs_icon);
-        tabLayout.getTabAt(1).setIcon(R.drawable.blacklist_icon);
+        tabLayout.setViewPager(viewPager);
+
+       // tabLayout.setupWithViewPager(viewPager);
+//        LinearLayout tabLayout1 = (LinearLayout)((ViewGroup) tabLayout.getChildAt(0)).getChildAt(0);
+//        TextView tabTextView = (TextView) tabLayout1.getChildAt(1);
+//        tabTextView.setTypeface(tabTextView.getTypeface(), Typeface.BOLD);
+//        tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                LinearLayout tabLayout1 = (LinearLayout)((ViewGroup) tabLayout.getChildAt(0)).getChildAt(tab.getPosition());
+//                TextView tabTextView = (TextView) tabLayout1.getChildAt(1);
+//                tabTextView.setTypeface(tabTextView.getTypeface(), Typeface.BOLD);
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//                LinearLayout tabLayout1 = (LinearLayout)((ViewGroup) tabLayout.getChildAt(0)).getChildAt(tab.getPosition());
+//                TextView tabTextView = (TextView) tabLayout1.getChildAt(1);
+//                tabTextView.setTypeface(null, Typeface.NORMAL);
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//
+//            }
+//        });
+//        tabLayout.setSelectedTabIndicator(R.drawable.indicator);
+//        tabLayout.getTabAt(0).setIcon(R.drawable.locklogs_icon);
+//        tabLayout.getTabAt(1).setIcon(R.drawable.blacklist_icon);
         setTitle("Chặn cuộc gọi");
 
 

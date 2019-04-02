@@ -1,21 +1,29 @@
 package com.dgteam.callblocker;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,6 +42,8 @@ public class BlockLogs extends Fragment {
     private static final String BLOCK_LOG = "block_logs.dat";
 
     private RecyclerView recyclerView;
+    private FloatingActionButton fabClearAll;
+
     private LogContactAdapter logContactAdapter;
     protected static List<ContactItemLog> contactItemLogList = new ArrayList<ContactItemLog>();
     private Context context;
@@ -76,8 +86,59 @@ public class BlockLogs extends Fragment {
         View view = inflater.inflate(R.layout.fragment_block_logs, container, false);
 
         recyclerView = (RecyclerView)view.findViewById(R.id.rvLog);
+        fabClearAll = (FloatingActionButton)view.findViewById(R.id.fabClearAll);
 
-        showRecyclerView(container);
+        fabClearAll.setOnClickListener(v -> {
+            if (!contactItemLogList.isEmpty()) {
+                BlurPopupWindow dialog = new BlurPopupWindow.Builder(context)
+                        .setContentView(R.layout.dialog)
+                        .setGravity(Gravity.CENTER)
+                        .setScaleRatio(0.2f)
+                        .setBlurRadius(15)
+                        .setTintColor(0x30000000)
+                        .setAnimationDuration(300)
+                        .setDismissOnClickBack(false)
+                        .setDismissOnTouchBackground(false)
+                        .build();
+                TextView message = (TextView) dialog.findViewById(R.id.tvMessage);
+                Button agree = (Button) dialog.findViewById(R.id.btAgree);
+                Button degree = (Button) dialog.findViewById(R.id.btDegree);
+
+                message.setText("Bạn có chắc muốn xóa tất cả nhật kí chặn cuộc gọi?");
+                agree.setText("Xóa");
+                agree.setTextColor(Color.parseColor("#FF0000"));
+                agree.setOnClickListener(v1 -> {
+                    List<ContactItemLog> backupList = new ArrayList<ContactItemLog>();
+                    backupList.clear();
+                    for (ContactItemLog i: contactItemLogList){
+                        backupList.add(i);
+                    }
+                    contactItemLogList.clear();
+                    logContactAdapter.notifyDataSetChanged();
+                    writeLogs();
+                    //Toast.makeText(container.getContext(),"Đã xóa nhật kí chặn cuộc gọi",Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    Snackbar.make(view, "Đã xóa nhật kí chặn cuộc gọi", Snackbar.LENGTH_LONG)
+                            .setAction("Hoàn tác", v2 -> {
+                                for (ContactItemLog i: backupList){
+                                    contactItemLogList.add(i);
+                                }
+                                logContactAdapter.notifyDataSetChanged();
+                                writeLogs();
+                            }).show();
+                });
+                degree.setTextColor(Color.parseColor("#FF0000"));
+                degree.setText("Hủy");
+                degree.setOnClickListener(v1 -> dialog.dismiss());
+                dialog.show();
+            }else {
+                //Toast.makeText(container.getContext(),"Nhật kí chặn cuộc gọi rỗng",Toast.LENGTH_SHORT).show();
+                Snackbar.make(view, "Nhật kí chặn cuộc gọi rỗng", Snackbar.LENGTH_SHORT).show();
+            }
+
+        });
+
+        showRecyclerView(container, view);
 
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -119,7 +180,7 @@ public class BlockLogs extends Fragment {
                 Log.d("aaa", "checkLogs: Xoa cuoi");
                 contactItemLogList.remove(contactItemLogList.size()-1);
             }
-            for (int i=0;i<contactItemLogList.size(); i++ ){
+            for (int i=0;i<contactItemLogList.size()-1; i++ ){
                 if (contactItemLogList.get(i).getHeader()!=null
                         && !contactItemLogList.get(i+1).getDateLog()
                         .equalsIgnoreCase(contactItemLogList.get(i).getDateLog())){
@@ -127,15 +188,33 @@ public class BlockLogs extends Fragment {
                 }
             }
         }
+        if (!contactItemLogList.isEmpty() && contactItemLogList.get(0).getHeader()==null){
+            contactItemLogList.add(0,new ContactItemLog(contactItemLogList.get(0).getDateLog()));
+        };
+        int i=0;
+        while (i<contactItemLogList.size()-1){
+            if (!contactItemLogList.get(i).getDateLog()
+                    .equalsIgnoreCase(contactItemLogList.get(i+1).getDateLog())
+                    && contactItemLogList.get(i).getHeader()==null &&
+                    contactItemLogList.get(i+1).getHeader()==null){
+                contactItemLogList.add(i+1,new ContactItemLog(
+                        contactItemLogList.get(i+1).getDateLog()));
+            }
+            if(contactItemLogList.get(i).getHeader()!=null && contactItemLogList.get(i+1)
+                    .getHeader()!=null){
+                contactItemLogList.remove(i);
+            }
+            i++;
+        }
     }
 
-    public void showRecyclerView(ViewGroup container){
+    public void showRecyclerView(ViewGroup container, View view){
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(),
                 LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(container.getContext(), 0));
-        logContactAdapter = new LogContactAdapter(contactItemLogList, container.getContext());
+        logContactAdapter = new LogContactAdapter(contactItemLogList, container.getContext(), view);
 
         recyclerView.setAdapter(logContactAdapter);
         logContactAdapter.notifyDataSetChanged();
@@ -145,8 +224,9 @@ public class BlockLogs extends Fragment {
             FileOutputStream fileOut = (FileOutputStream) MainActivity.getContextOfApplication()
                     .openFileOutput(BLOCK_LOG,Context.MODE_PRIVATE);
             ObjectOutputStream outputStream = new ObjectOutputStream(fileOut);
-            for(ContactItemLog i: contactItemLogList)
-                outputStream.writeObject(i);
+            for (int i=contactItemLogList.size()-1;i>=0;i--){
+                outputStream.writeObject(contactItemLogList.get(i));
+            }
             outputStream.close();
             fileOut.close();
         } catch (FileNotFoundException e) {
@@ -167,14 +247,14 @@ public class BlockLogs extends Fragment {
 
             while ((itemLog = (ContactItemLog) inputStream.readObject())!= null){
                 addList(itemLog);
+                checkLogs();
             }
 
             fileIn.close();
             inputStream.close();
-            checkLogs();
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            checkLogs();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

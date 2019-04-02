@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,11 +23,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     private List<ContactItem> contactList;
     private int layout;
     private Context context;
+    private View view;
 
-    public ContactAdapter(List<ContactItem> contactList, int layout, Context context) {
+    public ContactAdapter(List<ContactItem> contactList, int layout, Context context, View view) {
         this.contactList = contactList;
         this.layout = layout;
         this.context = context;
+        this.view = view;
     }
 
     @NonNull
@@ -62,10 +65,17 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             agree.setText("Xóa");
             agree.setTextColor(Color.parseColor("#FF0000"));
             agree.setOnClickListener(v1 -> {
+                ContactItem backup = contactList.get(i);
                 contactList.remove(i);
                 notifyDataSetChanged();
                 BlackList.writeContact();
                 dialog.dismiss();
+                Snackbar.make(view, "Đã xóa", Snackbar.LENGTH_LONG)
+                        .setAction("Hoàn tác", v2 -> {
+                                contactList.add(i,backup);
+                                notifyDataSetChanged();
+                                BlackList.writeContact();
+                        }).show();
             });
             degree.setTextColor(Color.parseColor("#FF0000"));
             degree.setText("Hủy");
