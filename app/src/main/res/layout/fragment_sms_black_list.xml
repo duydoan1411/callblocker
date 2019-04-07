@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BlackList">
+    <android.support.v7.widget.RecyclerView
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/recyclerViewSmsBalckList"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton4Sms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        app:backgroundTint="#4CAF50"
+        app:layout_anchor="@id/recyclerViewSmsBalckList"
+        app:layout_anchorGravity="bottom|center" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabPersonAddSms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/fabNumber"
+        android:layout_marginBottom="80dp"
+        android:layout_marginRight="220dp"
+        android:clickable="true"
+        android:src="@drawable/person_add"
+        android:visibility="invisible"
+        app:backgroundTint="#FFEB3B"
+        app:layout_anchor="@+id/floatingActionButton4Sms"
+        app:layout_anchorGravity="left|top"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabNumberSms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp"
+        android:layout_marginLeft="220dp"
+        android:clickable="true"
+        android:src="@drawable/add_number"
+        android:visibility="invisible"
+        app:backgroundTint="#FF9800"
+        app:layout_anchor="@+id/floatingActionButton4Sms"
+        app:layout_anchorGravity="right|top"
+        tools:srcCompat="@tools:sample/avatars" />
+
+
+</android.support.design.widget.CoordinatorLayout>

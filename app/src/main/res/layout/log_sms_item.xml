@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/bo_goc"
+    android:layout_margin="10dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_gravity="center_vertical"
+        android:id="@+id/ivAvatarSmsLog"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        tools:srcCompat="@tools:sample/avatars[0]" />
+
+    <LinearLayout
+        android:layout_weight="13"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvNameSmsLog"
+            android:gravity="bottom"
+            android:paddingLeft="30dp"
+            android:text="No Name"
+            android:textColor="#f000"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+
+        <TextView
+            android:id="@+id/tvNumberSmsLog"
+            android:gravity="bottom"
+            android:paddingLeft="30dp"
+            android:textSize="15sp"
+            android:text="0123456789"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+        <LinearLayout
+            android:paddingLeft="30dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:srcCompat="@drawable/sms_icon" />
+
+            <TextView
+                android:id="@+id/tvTimeSmsLog"
+                android:paddingLeft="5dp"
+                android:text="10:23:30"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+
+        android:id="@+id/imDeleteSmsLog"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/trash_icon_red"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:background="@drawable/vien"
+        android:padding="5dp"
+        android:layout_marginTop="10dp"
+        android:text="Message"
+        android:id="@+id/messageSmsLog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

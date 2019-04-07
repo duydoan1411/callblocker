@@ -12,7 +12,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
@@ -43,13 +42,13 @@ import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
 
-//Fragment
-public class BlackList extends Fragment {
+
+public class SmsBlackList extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public static final int REQUEST_SELECT_CONTACT = 1;
-    private static final String BLACK_LIST = "black_list.dat";
+    private static final String BLACK_LIST_SMS = "sms_black_list.dat";
 
     private RecyclerView recyclerView;
     private FloatingActionButton btAdd, fabContact, fabNumber;
@@ -62,13 +61,13 @@ public class BlackList extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public BlackList() {
+    public SmsBlackList() {
+
     }
 
 
-
-    public static BlackList newInstance(String param1, String param2) {
-        BlackList fragment = new BlackList();
+    public static SmsBlackList newInstance(String param1, String param2) {
+        SmsBlackList fragment = new SmsBlackList();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -94,11 +93,11 @@ public class BlackList extends Fragment {
                              Bundle savedInstanceState) {
 
         ///Ánh xạ các view
-        View view = inflater.inflate(R.layout.fragment_black_list,container,false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewBalckList);
-        btAdd = (FloatingActionButton) view.findViewById(R.id.floatingActionButton4);
-        fabContact = (FloatingActionButton) view.findViewById(R.id.fabPersonAdd);
-        fabNumber = (FloatingActionButton) view.findViewById(R.id.fabNumber);
+        View view = inflater.inflate(R.layout.fragment_sms_black_list,container,false);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewSmsBalckList);
+        btAdd = (FloatingActionButton) view.findViewById(R.id.floatingActionButton4Sms);
+        fabContact = (FloatingActionButton) view.findViewById(R.id.fabPersonAddSms);
+        fabNumber = (FloatingActionButton) view.findViewById(R.id.fabNumberSms);
 
         // Ẩn hiện 2 floating action button
 
@@ -224,86 +223,63 @@ public class BlackList extends Fragment {
                     InputStream inputPhoto =openPhoto(cursor.getLong(cursor.getColumnIndex(ContactsContract.Contacts._ID)));
                     Bitmap photo;
                     photo = inputPhoto != null ? getCroppedBitmap(BitmapFactory.decodeStream(inputPhoto)) :
-                             BitmapFactory.decodeResource(getResources(),R.drawable.avatar);
+                            BitmapFactory.decodeResource(getResources(),R.drawable.avatar);
 
 
                     if (!isExistContact(number)) {
-                     contactList.add(0,new ContactItem(id, name, number, photo));
-                     contactAdapter.notifyDataSetChanged();
-                     writeContact();
+                        contactList.add(0,new ContactItem(id, name, number, photo));
+                        contactAdapter.notifyDataSetChanged();
+                        writeContact();
 
                     }else
                         Snackbar.make(getView(),"Số điện thoại đã tồn tại",Snackbar.LENGTH_SHORT).show();
-                        //Toast.makeText(getContext(),"Số điện thoại đã tồn tại",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(),"Số điện thoại đã tồn tại",Toast.LENGTH_SHORT).show();
                 }else
                     Snackbar.make(getView(),"Đối tượng không có số điện thoại",Snackbar.LENGTH_SHORT).show();
-                    //Toast.makeText(getContext(),"Đối tượng không có số điện thoại",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(),"Đối tượng không có số điện thoại",Toast.LENGTH_SHORT).show();
             }
         }
 
     }
 
     public static void writeContact(){
-        class writeContectAT extends AsyncTask<Void, Void, Void>{
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-                try {
-                    FileOutputStream fileOut = (FileOutputStream) MainActivity.getContextOfApplication()
-                            .openFileOutput(BLACK_LIST,Context.MODE_PRIVATE);
-                    ObjectOutputStream outputStream = new ObjectOutputStream(fileOut);
-                    for(ContactItem i: contactList)
-                        outputStream.writeObject(i);
-                    outputStream.close();
-                    fileOut.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
+        try {
+            FileOutputStream fileOut = (FileOutputStream) MainActivity.getContextOfApplication()
+                    .openFileOutput(BLACK_LIST_SMS,Context.MODE_PRIVATE);
+            ObjectOutputStream outputStream = new ObjectOutputStream(fileOut);
+            for(ContactItem i: contactList)
+                outputStream.writeObject(i);
+            outputStream.close();
+            fileOut.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        new writeContectAT().execute();
     }
 
     private void readContact(){
-        class ReadCTAT extends AsyncTask<Void, Void, Void>{
+        try {
+            FileInputStream fileIn = getContext().openFileInput(BLACK_LIST_SMS);
+            ObjectInputStream inputStream = new ObjectInputStream(fileIn);
 
-            @Override
-            protected Void doInBackground(Void... voids) {
+            ContactItem contact;
+            contactList.clear();
 
-                try {
-                    FileInputStream fileIn = getContext().openFileInput(BLACK_LIST);
-                    ObjectInputStream inputStream = new ObjectInputStream(fileIn);
-
-                    ContactItem contact;
-                    contactList.clear();
-
-                    while ((contact = (ContactItem) inputStream.readObject())!= null){
-                        contactList.add(contact);
-                    }
-
-                    fileIn.close();
-                    inputStream.close();
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                return null;
+            while ((contact = (ContactItem) inputStream.readObject())!= null){
+                contactList.add(contact);
             }
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                //0contactAdapter.notifyDataSetChanged();
-            }
+            fileIn.close();
+            inputStream.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        new ReadCTAT().execute();
     }
 
     //Kiểm tra số đã tồn tại trong blacklist hay chưa
@@ -320,43 +296,22 @@ public class BlackList extends Fragment {
 
     //Cắt hình từ vuông thành tròn
     public Bitmap getCroppedBitmap(Bitmap bitmap) {
-        Bitmap[] outputBitmap = new Bitmap[1];
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
 
-        class CroppedAT extends AsyncTask<Void, Void, Bitmap>{
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
 
-            @Override
-            protected Bitmap doInBackground(Void... voids) {
-                Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                        bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-                Canvas canvas = new Canvas(output);
-
-                final int color = 0xff424242;
-                final Paint paint = new Paint();
-                final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-                paint.setAntiAlias(true);
-                canvas.drawARGB(0, 0, 0, 0);
-                paint.setColor(color);
-                canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                        bitmap.getWidth() / 2, paint);
-                paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-                canvas.drawBitmap(bitmap, rect, rect, paint);
-                return output;
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                super.onPostExecute(bitmap);
-
-                outputBitmap[0] = bitmap;
-
-            }
-        }
-
-        new CroppedAT().execute();
-
-        return  outputBitmap[0];
-
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+                bitmap.getWidth() / 2, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        return output;
     }
 
     //Lấy hình từ danh bạ thông qua ID
@@ -391,8 +346,8 @@ public class BlackList extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof SmsBlackList.OnFragmentInteractionListener) {
+            mListener = (SmsBlackList.OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");

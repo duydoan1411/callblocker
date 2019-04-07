@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#4CAF50</color>
     <color name="colorAccent">#4CAF50</color>
     <color name="titleColor">#FFFFFF</color>
+    <color name="menuText">#000000</color>
 </resources>

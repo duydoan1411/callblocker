@@ -2,8 +2,9 @@
     <string name="app_name">Chặn cuộc gọi và tin nhắn</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment"></string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="title_activity_main2">Main2Activity</string>
+    <string name="version">Phiên bản 1.0</string>
+    <string name="setting">Cài đặt</string>
+    <string name="about">Thông tin</string>
 </resources>

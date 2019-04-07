@@ -4,12 +4,11 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -20,14 +19,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.ogaclejapan.smarttablayout.SmartTabIndicationInterpolator;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
-public class MainActivity extends AppCompatActivity implements BlackList.OnFragmentInteractionListener, BlockLogs.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity
+        implements BlackList.OnFragmentInteractionListener,
+        BlockLogs.OnFragmentInteractionListener,
+        SmsBlackList.OnFragmentInteractionListener,
+        SmsLogs.OnFragmentInteractionListener{
 
 
 
@@ -35,10 +33,12 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
     private ViewPager viewPager;
     private BlackList blackList;
     private BlockLogs blockLogs;
+    private SmsBlackList smsBlackList;
+    private SmsLogs smsLogs;
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private VPAdapter adapter;
-
+    private NavigationView navigationView;
 
     public static Context contextOfApplication;
     public static Context getContextOfApplication()
@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        navigationView = (NavigationView)findViewById(R.id.navigationView);
+        navigationView.setItemIconTintList(null);
+        Menu menu = navigationView.getMenu();
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -67,36 +70,41 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         setViewPager();
         tabLayout.setViewPager(viewPager);
 
-       // tabLayout.setupWithViewPager(viewPager);
-//        LinearLayout tabLayout1 = (LinearLayout)((ViewGroup) tabLayout.getChildAt(0)).getChildAt(0);
-//        TextView tabTextView = (TextView) tabLayout1.getChildAt(1);
-//        tabTextView.setTypeface(tabTextView.getTypeface(), Typeface.BOLD);
-//        tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//                LinearLayout tabLayout1 = (LinearLayout)((ViewGroup) tabLayout.getChildAt(0)).getChildAt(tab.getPosition());
-//                TextView tabTextView = (TextView) tabLayout1.getChildAt(1);
-//                tabTextView.setTypeface(tabTextView.getTypeface(), Typeface.BOLD);
-//            }
-//
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {
-//                LinearLayout tabLayout1 = (LinearLayout)((ViewGroup) tabLayout.getChildAt(0)).getChildAt(tab.getPosition());
-//                TextView tabTextView = (TextView) tabLayout1.getChildAt(1);
-//                tabTextView.setTypeface(null, Typeface.NORMAL);
-//
-//            }
-//
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {
-//
-//            }
-//        });
-//        tabLayout.setSelectedTabIndicator(R.drawable.indicator);
-//        tabLayout.getTabAt(0).setIcon(R.drawable.locklogs_icon);
-//        tabLayout.getTabAt(1).setIcon(R.drawable.blacklist_icon);
         setTitle("Chặn cuộc gọi");
 
+        tabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position){
+                    case 0: {
+                        setTitle("Chặn Cuộc Gọi");
+                        break;
+                    }
+                    case 1: {
+                        setTitle("Chặn Cuộc Gọi");
+                        break;
+                    }
+                    case 2: {
+                        setTitle("Chặn Tin Nhắn");
+                        break;
+                    }
+                    case 3: {
+                        setTitle("Chặn Tin Nhắn");
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
 
         contextOfApplication = getApplicationContext();
         int PERMISSION_ALL = 1;
@@ -104,7 +112,11 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
                 Manifest.permission.READ_CONTACTS,
                 Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.READ_CALL_LOG,
-                Manifest.permission.CALL_PHONE
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.RECEIVE_SMS,
+                Manifest.permission.READ_SMS,
+
+
         };
 
 
@@ -133,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
 
     // Thoát ứng dụng
     public void dialogQuit(){
-        new AlertDialog.Builder(MainActivity.this)
+        new AlertDialog.Builder(MainActivity.this,R.style.AlertDialogStyle)
         .setTitle("Đóng ứng dụng")
         .setIcon(R.drawable.warning_amber)
         .setMessage("Ứng dụng sẽ đóng!")
@@ -157,12 +169,12 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         return true;
     }
 
+
     //Kiểm tra xem có chấp nhận quyền không
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0){
                     for (int i: grantResults){
                         if(i == PackageManager.PERMISSION_DENIED){
@@ -171,8 +183,6 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
                         }
                     }
                 } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                     dialogQuit();
                 }
 
@@ -186,8 +196,12 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
         adapter = new VPAdapter(getSupportFragmentManager());
         blackList = new BlackList();
         blockLogs = new BlockLogs();
-        adapter.add(blackList,"Danh sách đen");
-        adapter.add(blockLogs,"Nhật kí chặn");
+        smsBlackList = new SmsBlackList();
+        smsLogs = new SmsLogs();
+        adapter.add(blackList,"Danh sách đen cuộc gọi");
+        adapter.add(blockLogs,"Nhật kí chặn cuộc gọi");
+        adapter.add(smsBlackList,"Danh sách đen tin nhắn");
+        adapter.add(smsLogs,"Nhật kí chặn tin nhắn");
         viewPager.setAdapter(adapter);
 
     }
@@ -212,4 +226,5 @@ public class MainActivity extends AppCompatActivity implements BlackList.OnFragm
 
         return super.onCreateOptionsMenu(menu);
     }
+
 }

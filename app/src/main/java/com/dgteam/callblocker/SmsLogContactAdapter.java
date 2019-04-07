@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,17 +20,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class LogContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class SmsLogContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
-    private List<ContactItemLog> contactItemLogList;
+    private List<SmsContactItemLog> smsContactItemLogList;
     private Context context;
     private View view;
 
 
-    public LogContactAdapter(List<ContactItemLog> contactItemLogList, Context context, View view) {
-        this.contactItemLogList = contactItemLogList;
+    public SmsLogContactAdapter(List<SmsContactItemLog> smsContactItemLogList, Context context, View view) {
+        this.smsContactItemLogList = smsContactItemLogList;
         this.context = context;
         this.view = view;
     }
@@ -45,7 +44,7 @@ public class LogContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return new LogHeaderViewHolder(view);
         } else if (i == TYPE_ITEM){
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(
-                    R.layout.log_contact_adapter,viewGroup,false);
+                    R.layout.log_sms_item,viewGroup,false);
             return new LogItemViewHolder(view);
         }
         throw new RuntimeException(i+"");
@@ -54,7 +53,7 @@ public class LogContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if(viewHolder instanceof LogHeaderViewHolder){
-            ContactItemLog itemLog = contactItemLogList.get(i);
+            SmsContactItemLog itemLog = smsContactItemLogList.get(i);
             Date date = new Date();
             String today = new SimpleDateFormat("dd/MM/yyyy").format(date);
             Calendar calendar = Calendar.getInstance();
@@ -68,32 +67,28 @@ public class LogContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 ((LogHeaderViewHolder)viewHolder).header.setText(itemLog.getDateLog());
             }
         } else if (viewHolder instanceof LogItemViewHolder){
-            ContactItemLog itemLog = contactItemLogList.get(i);
-            //((LogItemViewHolder)viewHolder).ivAvatar.setImageBitmap(itemLog.getAvatar());
-            class ImgAsyncTask extends AsyncTask<Void, ContactItemLog, Void>{
+            SmsContactItemLog itemLog = smsContactItemLogList.get(i);
+            class ImgAsyncTask extends AsyncTask<Void, SmsContactItemLog, Void>{
 
                 @Override
                 protected Void doInBackground(Void... voids) {
 
-                    ContactItemLog itemLog1 = contactItemLogList.get(i);
+                    SmsContactItemLog itemLog1 = smsContactItemLogList.get(i);
                     publishProgress(itemLog1);
 
                     return null;
                 }
 
                 @Override
-                protected void onProgressUpdate(ContactItemLog... values) {
+                protected void onProgressUpdate(SmsContactItemLog... values) {
                     super.onProgressUpdate(values);
-
                     ((LogItemViewHolder)viewHolder).ivAvatar.setImageBitmap(values[0].getAvatar());
                 }
             }
             new ImgAsyncTask().execute();
-
             ((LogItemViewHolder)viewHolder).tvName.setText(itemLog.getName());
             ((LogItemViewHolder)viewHolder).tvNumber.setText(itemLog.getNumber());
             ((LogItemViewHolder)viewHolder).tvTime.setText(itemLog.getHourLog());
-
             ((LogItemViewHolder)viewHolder).imDelete.setOnClickListener(v -> {
                 BlurPopupWindow dialog = new BlurPopupWindow.Builder(context)
                         .setContentView(R.layout.dialog)
@@ -113,24 +108,24 @@ public class LogContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 agree.setText("Xóa");
                 agree.setTextColor(Color.parseColor("#FF0000"));
                 agree.setOnClickListener(v1 -> {
-                    ContactItemLog backup = contactItemLogList.get(i);
-                    contactItemLogList.remove(i);
-                    BlockLogs.checkLogs();
+                    SmsContactItemLog backup = smsContactItemLogList.get(i);
+                    smsContactItemLogList.remove(i);
+                    SmsLogs.checkLogs();
                     notifyDataSetChanged();
-                    BlockLogs.writeLogs();
+                    SmsLogs.writeLogs();
                     dialog.dismiss();
                     Snackbar.make(view,"Bạn đã xóa thành công",Snackbar.LENGTH_LONG)
                             .setAction("Hoàn tác",v2 -> {
-                                if (contactItemLogList.isEmpty())
+                                if (smsContactItemLogList.isEmpty())
                                 {
-                                    BlockLogs.addList(backup);
-                                }else if(i>=contactItemLogList.size()) {
-                                    contactItemLogList.add(backup);
+                                    SmsLogs.addList(backup);
+                                }else if(i>=smsContactItemLogList.size()) {
+                                    smsContactItemLogList.add(backup);
                                 }else
-                                    contactItemLogList.add(i,backup);
-                                BlockLogs.checkLogs();
+                                    smsContactItemLogList.add(i,backup);
+                                SmsLogs.checkLogs();
                                 notifyDataSetChanged();
-                                BlockLogs.writeLogs();
+                                SmsLogs.writeLogs();
                             }).show();
                 });
                 degree.setTextColor(Color.parseColor("#FF0000"));
@@ -143,7 +138,7 @@ public class LogContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return contactItemLogList.size();
+        return smsContactItemLogList.size();
     }
 
     @Override
@@ -155,7 +150,7 @@ public class LogContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private boolean isPositionHeader(int position) {
-        if (contactItemLogList.get(position).getName()==null){
+        if (smsContactItemLogList.get(position).getName()==null){
             return true;
         }else return false;
     }

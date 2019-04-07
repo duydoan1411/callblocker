@@ -39,7 +39,7 @@
             android:layout_height="35dp"
             android:background="@color/colorPrimary"
             app:stl_indicatorAlwaysInCenter="false"
-            app:stl_indicatorWithoutPadding="true"
+            app:stl_indicatorWithoutPadding="false"
             app:stl_indicatorInFront="true"
             app:stl_indicatorInterpolation="linear"
             app:stl_indicatorGravity="center"
@@ -59,7 +59,7 @@
             app:stl_defaultTabTextSize="12sp"
             app:stl_defaultTabTextHorizontalPadding="16dp"
             app:stl_defaultTabTextMinWidth="0dp"
-            app:stl_distributeEvenly="true"
+            app:stl_distributeEvenly="false"
             app:stl_clickable="true"
             app:stl_titleOffset="24dp"
             app:stl_drawDecorationAfterTab="false">
@@ -70,6 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+
             android:id="@+id/viewPager1"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
@@ -80,6 +81,8 @@
         android:id="@+id/navigationView"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        app:menu="@menu/navi_item"
+        app:itemTextColor="@color/menuText"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
@@ -88,14 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:layout_gravity="bottom"
-                android:layout_marginTop="30dp"
-                android:gravity="center"
-                android:textColor="#252525"
-                android:text="Phiên bản 1.0"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+
 
         </LinearLayout>
 

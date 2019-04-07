@@ -64,7 +64,7 @@ public class CallBlockerListener extends BroadcastReceiver {
                                     if ((number != null)) {
                                         ContactItemLog contactItemLog = new ContactItemLog(i.getId(), i.getName()
                                                 , i.getNumber(), i.getAvatar());
-                                        writeContact(contactItemLog);
+                                        writeContact(context,contactItemLog);
                                         telephonyService.endCall();
                                         Toast.makeText(context, "Đã chặn cuộc gọi từ: " + number, Toast.LENGTH_LONG).show();
 
@@ -88,12 +88,12 @@ public class CallBlockerListener extends BroadcastReceiver {
             }
     }
 
-    public static void writeContact(ContactItemLog contactItemLog){
+    public static void writeContact(Context context, ContactItemLog contactItemLog){
 
         ArrayList<ContactItemLog> contactListLog = new ArrayList<ContactItemLog>();
 
         try {
-            FileInputStream fileIn = MainActivity.getContextOfApplication().openFileInput(BLOCK_LOG);
+            FileInputStream fileIn = context.openFileInput(BLOCK_LOG);
             ObjectInputStream inputStream = new ObjectInputStream(fileIn);
 
             ContactItemLog contact;
@@ -115,8 +115,7 @@ public class CallBlockerListener extends BroadcastReceiver {
         }
 
         try{
-        FileOutputStream fileOut = (FileOutputStream) MainActivity.getContextOfApplication()
-                    .openFileOutput(BLOCK_LOG,Context.MODE_PRIVATE);
+        FileOutputStream fileOut = context.openFileOutput(BLOCK_LOG,Context.MODE_PRIVATE);
             ObjectOutputStream outputStream = new ObjectOutputStream(fileOut);
             contactListLog.add(contactItemLog);
             for (ContactItemLog i: contactListLog){
