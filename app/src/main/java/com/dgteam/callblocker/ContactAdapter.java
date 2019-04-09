@@ -69,13 +69,18 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                 contactList.remove(i);
                 notifyDataSetChanged();
                 BlackList.writeContact();
+                SmsBlackList.writeContact();
                 dialog.dismiss();
-                Snackbar.make(view, "Đã xóa", Snackbar.LENGTH_LONG)
+                Snackbar snackbar = Snackbar.make(view, "Đã xóa", Snackbar.LENGTH_LONG)
                         .setAction("Hoàn tác", v2 -> {
                                 contactList.add(i,backup);
                                 notifyDataSetChanged();
                                 BlackList.writeContact();
-                        }).show();
+                        });
+                View snackBarView = snackbar.getView();
+                TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+                textView.setTextColor(Color.WHITE);
+                snackbar.show();
             });
             degree.setTextColor(Color.parseColor("#FF0000"));
             degree.setText("Hủy");

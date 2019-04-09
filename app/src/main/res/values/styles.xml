@@ -10,6 +10,9 @@
         <item name="android:textColor">@color/menuText</item>
         <!--<item name="android:windowLightStatusBar"> true</item>-->
     </style>
+    <style name="ToolbarColoredBackArrow" parent="AppTheme">
+        <item name="android:textColorSecondary">@color/arrowColor</item>
+    </style>
     <style name="TabLayoutTextStyle">
         <item name="android:textStyle">bold</item>
     </style>
@@ -30,5 +33,6 @@
     <style name="myCustomMenuTextAppearance" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
         <item name="android:textColor">@color/menuText</item>
     </style>
+
 
 </resources>

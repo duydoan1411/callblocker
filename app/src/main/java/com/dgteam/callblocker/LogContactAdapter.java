@@ -119,7 +119,7 @@ public class LogContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     notifyDataSetChanged();
                     BlockLogs.writeLogs();
                     dialog.dismiss();
-                    Snackbar.make(view,"Bạn đã xóa thành công",Snackbar.LENGTH_LONG)
+                    Snackbar snackbar = Snackbar.make(view,"Bạn đã xóa thành công",Snackbar.LENGTH_LONG)
                             .setAction("Hoàn tác",v2 -> {
                                 if (contactItemLogList.isEmpty())
                                 {
@@ -131,7 +131,11 @@ public class LogContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 BlockLogs.checkLogs();
                                 notifyDataSetChanged();
                                 BlockLogs.writeLogs();
-                            }).show();
+                            });
+                    View snackBarView = snackbar.getView();
+                    TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+                    textView.setTextColor(Color.WHITE);
+                    snackbar.show();
                 });
                 degree.setTextColor(Color.parseColor("#FF0000"));
                 degree.setText("Hủy");

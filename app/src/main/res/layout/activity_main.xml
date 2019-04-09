@@ -20,15 +20,6 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
-        <!--<android.support.design.widget.TabLayout-->
-            <!--android:id="@+id/tabLayout1"-->
-            <!--app:tabTextColor="#FFFFFF"-->
-            <!--app:tabIndicatorColor="#f000"-->
-            <!--android:background="@color/colorPrimary"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:tabMode="fixed"-->
-            <!--app:tabGravity="fill"/>-->
         <com.ogaclejapan.smarttablayout.SmartTabLayout
 
             android:id="@+id/tabLayout1"
@@ -43,7 +34,7 @@
             app:stl_indicatorInFront="true"
             app:stl_indicatorInterpolation="linear"
             app:stl_indicatorGravity="center"
-            app:stl_indicatorColor="#5C8A5C"
+            app:stl_indicatorColor="#5D7A5D"
             app:stl_indicatorThickness="25dp"
             app:stl_indicatorWidth="auto"
             app:stl_indicatorCornerRadius="20dp"
@@ -82,16 +73,26 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:menu="@menu/navi_item"
+        app:headerLayout="@layout/header_navigation"
         app:itemTextColor="@color/menuText"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
         <LinearLayout
             android:orientation="vertical"
+            android:gravity="bottom"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
+            <TextView
+                android:layout_marginBottom="10dp"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:textColor="#252525"
+                android:text="@string/version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

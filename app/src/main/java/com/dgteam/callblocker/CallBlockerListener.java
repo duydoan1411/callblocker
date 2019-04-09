@@ -4,8 +4,10 @@ import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.provider.BlockedNumberContract;
@@ -32,11 +34,14 @@ public class CallBlockerListener extends BroadcastReceiver {
 
     private static final String BLACK_LIST = "black_list.dat";
     private static final String BLOCK_LOG = "block_logs.dat";
+    private SharedPreferences preferences;
     private ArrayList<ContactItem> contactList = new ArrayList<ContactItem>();
 
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        preferences = context.getSharedPreferences("settings",Context.MODE_PRIVATE);
+        if (preferences.getBoolean("call",true))
         if (intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER) != null)
             if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                 readContact(context);
@@ -65,8 +70,13 @@ public class CallBlockerListener extends BroadcastReceiver {
                                         ContactItemLog contactItemLog = new ContactItemLog(i.getId(), i.getName()
                                                 , i.getNumber(), i.getAvatar());
                                         writeContact(context,contactItemLog);
-                                        telephonyService.endCall();
-                                        Toast.makeText(context, "Đã chặn cuộc gọi từ: " + number, Toast.LENGTH_LONG).show();
+                                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
+                                            telephonyService.endCall();
+                                            Toast.makeText(context, "Đã chặn cuộc gọi từ: " + number, Toast.LENGTH_LONG).show();
+                                        }
+                                        else
+                                            Toast.makeText(context,"Không thể chặn cuộc gọi với phiên bản Android lớn hơn 8.0",Toast.LENGTH_LONG)
+                                            .show();
 
                                     }
 

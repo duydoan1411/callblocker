@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -54,6 +55,7 @@ public class BlockLogs extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private BroadcastReceiver broadcastReceiver;
+    private SharedPreferences preferences;
 
     public BlockLogs() {
 
@@ -116,14 +118,18 @@ public class BlockLogs extends Fragment {
                     writeLogs();
                     //Toast.makeText(container.getContext(),"Đã xóa nhật kí chặn cuộc gọi",Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
-                    Snackbar.make(view, "Đã xóa nhật kí chặn cuộc gọi", Snackbar.LENGTH_LONG)
+                    Snackbar snackbar = Snackbar.make(view, "Đã xóa nhật kí chặn cuộc gọi", Snackbar.LENGTH_LONG)
                             .setAction("Hoàn tác", v2 -> {
                                 for (ContactItemLog i: backupList){
                                     contactItemLogList.add(i);
                                 }
                                 logContactAdapter.notifyDataSetChanged();
                                 writeLogs();
-                            }).show();
+                            });
+                    View snackBarView = snackbar.getView();
+                    TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+                    textView.setTextColor(Color.WHITE);
+                    snackbar.show();
                 });
                 degree.setTextColor(Color.parseColor("#FF0000"));
                 degree.setText("Hủy");
@@ -141,10 +147,11 @@ public class BlockLogs extends Fragment {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                preferences = context.getSharedPreferences("settings",Context.MODE_PRIVATE);
+                if (preferences.getBoolean("call",true))
                 if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).
                         equals(TelephonyManager.EXTRA_STATE_IDLE)){
                     readLogs();
-                    Log.d("aaa", "onReceive: "+contactItemLogList.size());
                     logContactAdapter.notifyDataSetChanged();
                 }
             }

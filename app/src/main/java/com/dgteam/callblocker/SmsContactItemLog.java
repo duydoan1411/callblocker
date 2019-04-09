@@ -23,6 +23,14 @@ public class SmsContactItemLog extends ContactItem implements Serializable{
         dateLog = header;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public String getDateLog() {
         return dateLog;
     }

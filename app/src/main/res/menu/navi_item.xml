@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <group>
         <item
-            android:id="@+id/settings"
-            android:icon="@drawable/settings_icon"
-            android:title="@string/setting"/>
+            android:id="@+id/callBlock"
+            android:icon="@drawable/call_block"
+            android:title="Chặn cuộc gọi">
+
+        </item>
         <item
-            android:id="@+id/about"
-            android:icon="@drawable/about_icon"
-            android:title="@string/about"/>
+            android:icon="@drawable/sms_block"
+            android:id="@+id/smsBlock"
+            android:title="Chặn tin nhắn">
+
+        </item>
     </group>
+
+    <item android:title="Tùy chỉnh">
+        <menu>
+            <item
+                android:id="@+id/settings"
+                android:icon="@drawable/settings_icon"
+                android:title="@string/setting"/>
+            <item
+                android:id="@+id/about"
+                android:icon="@drawable/about_icon"
+                android:title="@string/about"/>
+        </menu>
+    </item>
+
 </menu>

@@ -4,10 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -54,6 +56,7 @@ public class SmsLogs extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private BroadcastReceiver broadcastReceiver;
+    private SharedPreferences preferences;
 
     public SmsLogs() {
 
@@ -116,14 +119,18 @@ public class SmsLogs extends Fragment {
                     writeLogs();
                     //Toast.makeText(container.getContext(),"Đã xóa nhật kí chặn cuộc gọi",Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
-                    Snackbar.make(view, "Đã xóa nhật kí chặn cuộc gọi", Snackbar.LENGTH_LONG)
+                    Snackbar snackbar = Snackbar.make(view, "Đã xóa nhật kí chặn cuộc gọi", Snackbar.LENGTH_LONG)
                             .setAction("Hoàn tác", v2 -> {
                                 for (SmsContactItemLog i: backupList){
                                     smsContactItemLogList.add(i);
                                 }
                                 smsLogContactAdapter.notifyDataSetChanged();
                                 writeLogs();
-                            }).show();
+                            });
+                    View snackBarView = snackbar.getView();
+                    TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+                    textView.setTextColor(Color.WHITE);
+                    snackbar.show();
                 });
                 degree.setTextColor(Color.parseColor("#FF0000"));
                 degree.setText("Hủy");
@@ -131,25 +138,29 @@ public class SmsLogs extends Fragment {
                 dialog.show();
             }else {
                 //Toast.makeText(container.getContext(),"Nhật kí chặn cuộc gọi rỗng",Toast.LENGTH_SHORT).show();
-                Snackbar.make(view, "Nhật kí chặn cuộc gọi rỗng", Snackbar.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar.make(view, "Nhật kí chặn cuộc gọi rỗng", Snackbar.LENGTH_SHORT);
+                View snackBarView = snackbar.getView();
+                TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+                textView.setTextColor(Color.WHITE);
+                snackbar.show();
             }
 
         });
 
         showRecyclerView(container, view);
 
-//        broadcastReceiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                if (intent.getStringExtra(TelephonyManager.EXTRA_STATE).
-//                        equals(TelephonyManager.EXTRA_STATE_IDLE)){
-//                    readLogs();
-//                    Log.d("aaa", "onReceive: "+smsContactItemLogList.size());
-//                    smsLogContactAdapter.notifyDataSetChanged();
-//                }
-//            }
-//        };
-//        context.registerReceiver(broadcastReceiver, new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED));
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                preferences = context.getSharedPreferences("settings",Context.MODE_PRIVATE);
+                if (preferences.getBoolean("sms",true))
+                if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")){
+                    readLogs();
+                    smsLogContactAdapter.notifyDataSetChanged();
+                }
+            }
+        };
+        context.registerReceiver(broadcastReceiver, new IntentFilter("android.provider.Telephony.SMS_RECEIVED"));
 
         return view;
     }
@@ -175,7 +186,6 @@ public class SmsLogs extends Fragment {
             smsContactItemLogList.clear();
         }else {
             if (smsContactItemLogList.get(smsContactItemLogList.size()-1).getHeader()!=null){
-                Log.d("aaa", "checkLogs: Xoa cuoi");
                 smsContactItemLogList.remove(smsContactItemLogList.size()-1);
             }
             for (int i=0;i<smsContactItemLogList.size()-1; i++ ){
@@ -288,7 +298,7 @@ public class SmsLogs extends Fragment {
 
     @Override
     public void onDestroyView() {
-        //context.unregisterReceiver(broadcastReceiver);
+        context.unregisterReceiver(broadcastReceiver);
         super.onDestroyView();
     }
 

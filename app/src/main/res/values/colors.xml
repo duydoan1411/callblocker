@@ -5,4 +5,5 @@
     <color name="colorAccent">#4CAF50</color>
     <color name="titleColor">#FFFFFF</color>
     <color name="menuText">#000000</color>
+    <color name="arrowColor">#FFFEFE</color>
 </resources>

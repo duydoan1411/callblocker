@@ -57,7 +57,7 @@
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                app:srcCompat="@drawable/sms_icon" />
+                app:srcCompat="@drawable/block_sms_icon" />
 
             <TextView
                 android:id="@+id/tvTimeSmsLog"

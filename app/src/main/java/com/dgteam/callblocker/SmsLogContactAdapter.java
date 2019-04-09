@@ -45,7 +45,7 @@ public class SmsLogContactAdapter extends RecyclerView.Adapter<RecyclerView.View
         } else if (i == TYPE_ITEM){
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(
                     R.layout.log_sms_item,viewGroup,false);
-            return new LogItemViewHolder(view);
+            return new SmsLogItemViewHolder(view);
         }
         throw new RuntimeException(i+"");
     }
@@ -66,7 +66,7 @@ public class SmsLogContactAdapter extends RecyclerView.Adapter<RecyclerView.View
             }else {
                 ((LogHeaderViewHolder)viewHolder).header.setText(itemLog.getDateLog());
             }
-        } else if (viewHolder instanceof LogItemViewHolder){
+        } else if (viewHolder instanceof SmsLogItemViewHolder){
             SmsContactItemLog itemLog = smsContactItemLogList.get(i);
             class ImgAsyncTask extends AsyncTask<Void, SmsContactItemLog, Void>{
 
@@ -82,14 +82,15 @@ public class SmsLogContactAdapter extends RecyclerView.Adapter<RecyclerView.View
                 @Override
                 protected void onProgressUpdate(SmsContactItemLog... values) {
                     super.onProgressUpdate(values);
-                    ((LogItemViewHolder)viewHolder).ivAvatar.setImageBitmap(values[0].getAvatar());
+                    ((SmsLogItemViewHolder)viewHolder).ivAvatar.setImageBitmap(values[0].getAvatar());
                 }
             }
             new ImgAsyncTask().execute();
-            ((LogItemViewHolder)viewHolder).tvName.setText(itemLog.getName());
-            ((LogItemViewHolder)viewHolder).tvNumber.setText(itemLog.getNumber());
-            ((LogItemViewHolder)viewHolder).tvTime.setText(itemLog.getHourLog());
-            ((LogItemViewHolder)viewHolder).imDelete.setOnClickListener(v -> {
+            ((SmsLogItemViewHolder)viewHolder).tvName.setText(itemLog.getName());
+            ((SmsLogItemViewHolder)viewHolder).tvNumber.setText(itemLog.getNumber());
+            ((SmsLogItemViewHolder)viewHolder).tvTime.setText(itemLog.getHourLog());
+            ((SmsLogItemViewHolder)viewHolder).messages.setText(itemLog.getMessage());
+            ((SmsLogItemViewHolder)viewHolder).imDelete.setOnClickListener(v -> {
                 BlurPopupWindow dialog = new BlurPopupWindow.Builder(context)
                         .setContentView(R.layout.dialog)
                         .setGravity(Gravity.CENTER)
@@ -114,7 +115,7 @@ public class SmsLogContactAdapter extends RecyclerView.Adapter<RecyclerView.View
                     notifyDataSetChanged();
                     SmsLogs.writeLogs();
                     dialog.dismiss();
-                    Snackbar.make(view,"Bạn đã xóa thành công",Snackbar.LENGTH_LONG)
+                    Snackbar snackbar = Snackbar.make(view,"Bạn đã xóa thành công",Snackbar.LENGTH_LONG)
                             .setAction("Hoàn tác",v2 -> {
                                 if (smsContactItemLogList.isEmpty())
                                 {
@@ -126,7 +127,11 @@ public class SmsLogContactAdapter extends RecyclerView.Adapter<RecyclerView.View
                                 SmsLogs.checkLogs();
                                 notifyDataSetChanged();
                                 SmsLogs.writeLogs();
-                            }).show();
+                            });
+                    View snackBarView = snackbar.getView();
+                    TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+                    textView.setTextColor(Color.WHITE);
+                    snackbar.show();
                 });
                 degree.setTextColor(Color.parseColor("#FF0000"));
                 degree.setText("Hủy");

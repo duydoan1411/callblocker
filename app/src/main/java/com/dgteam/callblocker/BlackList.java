@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -27,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
@@ -232,12 +234,23 @@ public class BlackList extends Fragment {
                      contactAdapter.notifyDataSetChanged();
                      writeContact();
 
-                    }else
-                        Snackbar.make(getView(),"Số điện thoại đã tồn tại",Snackbar.LENGTH_SHORT).show();
-                        //Toast.makeText(getContext(),"Số điện thoại đã tồn tại",Toast.LENGTH_SHORT).show();
-                }else
-                    Snackbar.make(getView(),"Đối tượng không có số điện thoại",Snackbar.LENGTH_SHORT).show();
-                    //Toast.makeText(getContext(),"Đối tượng không có số điện thoại",Toast.LENGTH_SHORT).show();
+                    }else {
+                        Snackbar snackbar;
+                        snackbar = Snackbar.make(getView(), "Số điện thoại đã tồn tại", Snackbar.LENGTH_SHORT);
+                        View snackBarView = snackbar.getView();
+                        TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.WHITE);
+                        snackbar.show();
+
+                    }//Toast.makeText(getContext(),"Số điện thoại đã tồn tại",Toast.LENGTH_SHORT).show();
+                }else {
+                    Snackbar snackbar;
+                    snackbar = Snackbar.make(getView(), "Đối tượng không có số điện thoại", Snackbar.LENGTH_SHORT);
+                    View snackBarView = snackbar.getView();
+                    TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+                    textView.setTextColor(Color.WHITE);
+                    snackbar.show();
+                } //Toast.makeText(getContext(),"Đối tượng không có số điện thoại",Toast.LENGTH_SHORT).show();
             }
         }
 

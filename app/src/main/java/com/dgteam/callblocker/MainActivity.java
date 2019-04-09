@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.Telephony;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -19,6 +20,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 public class MainActivity extends AppCompatActivity
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         navigationView = (NavigationView)findViewById(R.id.navigationView);
         navigationView.setItemIconTintList(null);
-        Menu menu = navigationView.getMenu();
+
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -105,6 +109,28 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.callBlock:
+                        viewPager.setCurrentItem(0);
+                        drawer.closeDrawers();
+                        break;
+                    case R.id.smsBlock:
+                        viewPager.setCurrentItem(2);
+                        drawer.closeDrawers();
+                        break;
+
+                    case R.id.settings:
+                        Intent intentSetting = new Intent(MainActivity.this,Settings.class);
+                        startActivity(intentSetting);
+                        break;
+                }
+                return true;
+            }
+        });
+
 
         contextOfApplication = getApplicationContext();
         int PERMISSION_ALL = 1;
@@ -138,6 +164,14 @@ public class MainActivity extends AppCompatActivity
             }
 
         }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            if(!Telephony.Sms.getDefaultSmsPackage(getApplicationContext()).equals(getApplicationContext().getPackageName())) {
+//                Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+//                intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME,
+//                        getApplicationContext().getPackageName());
+//                startActivity(intent);
+//            }
+//        }
     }
     public void dataChanged() {
         viewPager.getAdapter().notifyDataSetChanged();
