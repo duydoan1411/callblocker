@@ -20,8 +20,8 @@
         android:roundIcon="@mipmap/call_blocker_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".Settings">
-        </activity>
+        <activity android:name=".About"></activity>
+        <activity android:name=".Settings"></activity>
 
         <receiver
             android:name=".SmsBlockerListener"

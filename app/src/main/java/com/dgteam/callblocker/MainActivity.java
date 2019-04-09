@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity
                         viewPager.setCurrentItem(0);
                         drawer.closeDrawers();
                         break;
+
                     case R.id.smsBlock:
                         viewPager.setCurrentItem(2);
                         drawer.closeDrawers();
@@ -125,6 +126,10 @@ public class MainActivity extends AppCompatActivity
                     case R.id.settings:
                         Intent intentSetting = new Intent(MainActivity.this,Settings.class);
                         startActivity(intentSetting);
+                        break;
+                    case R.id.about:
+                        Intent intentAbout = new Intent(MainActivity.this,About.class);
+                        startActivity(intentAbout);
                         break;
                 }
                 return true;
