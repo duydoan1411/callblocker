@@ -112,6 +112,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
 //            itemView.setOnClickListener(this);
 //            itemView.setOnLongClickListener(this);
+//            setItemClickListener(new ItemClickListener() {
+//                @Override
+//                public void onClick(View view, int position, boolean isLongClick) {
+//
+//                }
+//            });
         }
 
 //        public void setItemClickListener(ItemClickListener itemClickListener) {

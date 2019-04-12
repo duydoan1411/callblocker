@@ -22,9 +22,6 @@ public class ContactItemLog extends ContactItem implements Serializable{
         this.header = header;
         dateLog = header;
     }
-    public ContactItemLog(){
-
-    }
 
     public String getDateLog() {
         return dateLog;

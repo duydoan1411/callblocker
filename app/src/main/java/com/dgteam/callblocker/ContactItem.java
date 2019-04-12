@@ -72,6 +72,7 @@ public class ContactItem implements Serializable {
                 "number='" + number + '\'' +
                 ", name='" + name + '\'' +
                 ", id='" + id + '\'' +
+                ", avatar='" + avatar + '\'' +
                 '}';
     }
 }

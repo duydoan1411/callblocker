@@ -1,20 +1,12 @@
 package com.dgteam.callblocker;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.os.Binder;
 import android.os.Build;
-import android.os.IBinder;
 import android.os.RemoteException;
-import android.provider.BlockedNumberContract;
-import android.support.v4.app.ActivityCompat;
-import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.android.internal.telephony.ITelephony;
@@ -164,5 +156,4 @@ public class CallBlockerListener extends BroadcastReceiver {
             e.printStackTrace();
         }
     }
-
 }

@@ -1,9 +1,11 @@
 package com.dgteam.callblocker;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Telephony;
@@ -19,11 +21,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements BlackList.OnFragmentInteractionListener,
@@ -49,6 +55,7 @@ public class MainActivity extends AppCompatActivity
     {
         return contextOfApplication;
     }
+
 
 
     @Override
@@ -131,6 +138,10 @@ public class MainActivity extends AppCompatActivity
                         Intent intentAbout = new Intent(MainActivity.this,About.class);
                         startActivity(intentAbout);
                         break;
+                    case R.id.smsActivity:
+                        Intent intentSms = new Intent(MainActivity.this,SmsActivity.class);
+                        startActivity(intentSms);
+                        break;
                 }
                 return true;
             }
@@ -169,15 +180,19 @@ public class MainActivity extends AppCompatActivity
             }
 
         }
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            if(!Telephony.Sms.getDefaultSmsPackage(getApplicationContext()).equals(getApplicationContext().getPackageName())) {
-//                Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-//                intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME,
-//                        getApplicationContext().getPackageName());
-//                startActivity(intent);
-//            }
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if(!Telephony.Sms.getDefaultSmsPackage(getApplicationContext()).equals(getApplicationContext().getPackageName())) {
+                Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+                intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME,
+                        getApplicationContext().getPackageName());
+                startActivity(intent);
+            }
+        }
     }
+
+
+
+
     public void dataChanged() {
         viewPager.getAdapter().notifyDataSetChanged();
     }

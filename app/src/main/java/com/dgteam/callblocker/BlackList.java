@@ -22,6 +22,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -226,31 +227,28 @@ public class BlackList extends Fragment {
                     InputStream inputPhoto =openPhoto(cursor.getLong(cursor.getColumnIndex(ContactsContract.Contacts._ID)));
                     Bitmap photo;
                     photo = inputPhoto != null ? getCroppedBitmap(BitmapFactory.decodeStream(inputPhoto)) :
-                             BitmapFactory.decodeResource(getResources(),R.drawable.avatar);
-
+                            BitmapFactory.decodeResource(getResources(),R.drawable.avatar);
 
                     if (!isExistContact(number)) {
-                     contactList.add(0,new ContactItem(id, name, number, photo));
-                     contactAdapter.notifyDataSetChanged();
-                     writeContact();
+                        contactList.add(0,new ContactItem(id, name, number, photo));
+                        Log.d("aaa", "onActivityResult: "+contactList.get(0).toString());
+                        contactAdapter.notifyDataSetChanged();
+                        writeContact();
 
                     }else {
-                        Snackbar snackbar;
-                        snackbar = Snackbar.make(getView(), "Số điện thoại đã tồn tại", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar =Snackbar.make(getView(), "Số điện thoại đã tồn tại", Snackbar.LENGTH_SHORT);
                         View snackBarView = snackbar.getView();
                         TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
                         textView.setTextColor(Color.WHITE);
                         snackbar.show();
-
                     }//Toast.makeText(getContext(),"Số điện thoại đã tồn tại",Toast.LENGTH_SHORT).show();
                 }else {
-                    Snackbar snackbar;
-                    snackbar = Snackbar.make(getView(), "Đối tượng không có số điện thoại", Snackbar.LENGTH_SHORT);
+                    Snackbar snackbar = Snackbar.make(getView(), "Đối tượng không có số điện thoại", Snackbar.LENGTH_SHORT);
                     View snackBarView = snackbar.getView();
                     TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
                     textView.setTextColor(Color.WHITE);
                     snackbar.show();
-                } //Toast.makeText(getContext(),"Đối tượng không có số điện thoại",Toast.LENGTH_SHORT).show();
+                }//Toast.makeText(getContext(),"Đối tượng không có số điện thoại",Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -313,7 +311,7 @@ public class BlackList extends Fragment {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                //0contactAdapter.notifyDataSetChanged();
+                contactAdapter.notifyDataSetChanged();
             }
         }
         new ReadCTAT().execute();
@@ -333,43 +331,22 @@ public class BlackList extends Fragment {
 
     //Cắt hình từ vuông thành tròn
     public Bitmap getCroppedBitmap(Bitmap bitmap) {
-        Bitmap[] outputBitmap = new Bitmap[1];
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
 
-        class CroppedAT extends AsyncTask<Void, Void, Bitmap>{
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
 
-            @Override
-            protected Bitmap doInBackground(Void... voids) {
-                Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                        bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-                Canvas canvas = new Canvas(output);
-
-                final int color = 0xff424242;
-                final Paint paint = new Paint();
-                final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-                paint.setAntiAlias(true);
-                canvas.drawARGB(0, 0, 0, 0);
-                paint.setColor(color);
-                canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                        bitmap.getWidth() / 2, paint);
-                paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-                canvas.drawBitmap(bitmap, rect, rect, paint);
-                return output;
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                super.onPostExecute(bitmap);
-
-                outputBitmap[0] = bitmap;
-
-            }
-        }
-
-        new CroppedAT().execute();
-
-        return  outputBitmap[0];
-
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+                bitmap.getWidth() / 2, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        return output;
     }
 
     //Lấy hình từ danh bạ thông qua ID
