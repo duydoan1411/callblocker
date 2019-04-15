@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +40,13 @@ public class SmsForNumberActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         getAllSmsFromProvider();
 
-        Intent intent = getIntent();
-        setTitle(intent.getStringExtra("name"));
-        number = intent.getStringExtra("number");
+        Intent intent = this.getIntent();
+        Bundle bundle = intent.getExtras();
+        setTitle(bundle.getString("name"));
+        number = bundle.getString("number");
+        Log.d("aaa", "onCreate: "+intent.getStringExtra("123"));
         number = number.length() >= 10 ? number.substring(number.length() - 9) : number;
+        Log.d("aaa", "onCreate: "+intent.getStringExtra("name")+" "+intent.getStringExtra("number"));
 
         if(lstAdd!=null) {
             messagesList.clear();

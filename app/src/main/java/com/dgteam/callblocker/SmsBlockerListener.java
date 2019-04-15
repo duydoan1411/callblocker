@@ -5,15 +5,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,22 +18,18 @@ import android.provider.Telephony;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.telephony.SmsMessage;
-import android.util.Log;
 import android.widget.Toast;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 public class SmsBlockerListener extends BroadcastReceiver {
 
@@ -204,10 +196,15 @@ public class SmsBlockerListener extends BroadcastReceiver {
     }
     public NotificationCompat.Builder notifyApp(String number, String title, String body){
         Intent intent = new Intent(context,SmsForNumberActivity.class);
-        intent.putExtra("name",title);
-        intent.putExtra("number",number);
+        Bundle bundle = new Bundle();
+        bundle.clear();
+        intent.removeExtra("123");
+        bundle.putString("name", title);
+        bundle.putString("number", number);
+
+        intent.putExtras(bundle);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Builder(context, "123456")
                 .setSmallIcon(R.drawable.icon_sms)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(body))

@@ -1,6 +1,5 @@
 package com.dgteam.callblocker;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
