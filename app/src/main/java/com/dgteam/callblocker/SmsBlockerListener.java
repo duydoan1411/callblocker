@@ -18,6 +18,7 @@ import android.provider.Telephony;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.telephony.SmsMessage;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
@@ -74,32 +75,32 @@ public class SmsBlockerListener extends BroadcastReceiver {
                         }
                     }
                     message = content.toString();
-                        String numberIncoming = currentSMS.getDisplayOriginatingAddress();
-                        number = numberIncoming;
-                        numberIncoming = numberIncoming.length() >= 10 ?
-                                numberIncoming.substring(numberIncoming.length() - 9) : numberIncoming;
-                        if (!contactBlackList.isEmpty()) {
-                            for (ContactItem i : contactBlackList) {
-                                String numberBL = i.getNumber().length() >= 10 ?
-                                        i.getNumber().substring(i.getNumber().length() - 9) : i.getNumber();
-                                if (numberBL.equals(numberIncoming)) {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-                                        if (Telephony.Sms.getDefaultSmsPackage(context).equals(context.getPackageName()))
-                                            this.abortBroadcast();
-                                        else {
-                                            Toast.makeText(context, "Bản phải chọn ứng dụng mặc định để chặn tin nhắn",
-                                                    Toast.LENGTH_LONG).show();
-                                        }
+                    String numberIncoming = currentSMS.getDisplayOriginatingAddress();
+                    number = numberIncoming;
+                    numberIncoming = numberIncoming.length() >= 10 ?
+                            numberIncoming.substring(numberIncoming.length() - 9) : numberIncoming;
+                    if (!contactBlackList.isEmpty()) {
+                        for (ContactItem i : contactBlackList) {
+                            String numberBL = i.getNumber().length() >= 10 ?
+                                    i.getNumber().substring(i.getNumber().length() - 9) : i.getNumber();
+                            if (numberBL.equals(numberIncoming)) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                                    if (Telephony.Sms.getDefaultSmsPackage(context).equals(context.getPackageName()))
+                                        this.abortBroadcast();
+                                    else {
+                                        Toast.makeText(context, "Bản phải chọn ứng dụng mặc định để chặn tin nhắn",
+                                                Toast.LENGTH_LONG).show();
+                                    }
 
-                                    SmsContactItemLog smsContactItemLog = new SmsContactItemLog(
-                                            i.getId(), i.getName(), i.getNumber(), i.getAvatar(), message
-                                    );
-                                    writeContact(smsContactItemLog);
-                                    kt = false;
-                                    break;
-                                }
+                                SmsContactItemLog smsContactItemLog = new SmsContactItemLog(
+                                        i.getId(), i.getName(), i.getNumber(), i.getAvatar(), message
+                                );
+                                writeContact(smsContactItemLog);
+                                kt = false;
+                                break;
                             }
                         }
+                    }
                     if(kt){
                         class TaskReadContact extends AsyncTask<String, List<ContactItem>, String>{
 
@@ -125,7 +126,10 @@ public class SmsBlockerListener extends BroadcastReceiver {
                                 }
                             }
                         }
-                        new TaskReadContact().execute(number);
+                        if(Telephony.Sms.getDefaultSmsPackage(context.getApplicationContext()).equals(context.getApplicationContext().getPackageName())){
+                            new TaskReadContact().execute(number);
+                            Log.i("TAG", "onReceive: 45646");
+                        }
 
                         ContentValues values = new ContentValues();
                         values.put(Telephony.Sms.ADDRESS, number);
