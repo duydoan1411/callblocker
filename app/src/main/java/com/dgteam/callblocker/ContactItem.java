@@ -9,6 +9,8 @@ import java.io.Serializable;
 public class ContactItem implements Serializable {
 
     private String number, name, id;
+    private boolean checkTimeBlock = false;
+    private int count,beginTimeHour=0, beginTimeMinute=0, endTimeHour=0, endTimeMinute=0;
     private byte[] avatar;
 
     public ContactItem(String id,String name, String number, Bitmap avatar) {
@@ -20,10 +22,60 @@ public class ContactItem implements Serializable {
             avatar.compress(Bitmap.CompressFormat.PNG, 100, stream);
             this.avatar = stream.toByteArray();
         }
+        this.count = 0;
 
     }
-    public ContactItem(){
 
+    public boolean isCheckTimeBlock() {
+        return checkTimeBlock;
+    }
+
+    public void setCheckTimeBlock(boolean checkTimeBlock) {
+        this.checkTimeBlock = checkTimeBlock;
+    }
+
+    public int getBeginTimeHour() {
+        return beginTimeHour;
+    }
+
+    public void setBeginTimeHour(int beginTimeHour) {
+        this.beginTimeHour = beginTimeHour;
+    }
+
+    public int getBeginTimeMinute() {
+        return beginTimeMinute;
+    }
+
+    public void setBeginTimeMinute(int beginTimeMinute) {
+        this.beginTimeMinute = beginTimeMinute;
+    }
+
+    public int getEndTimeHour() {
+        return endTimeHour;
+    }
+
+    public void setEndTimeHour(int endTimeHour) {
+        this.endTimeHour = endTimeHour;
+    }
+
+    public int getEndTimeMinute() {
+        return endTimeMinute;
+    }
+
+    public void setEndTimeMinute(int endTimeMinute) {
+        this.endTimeMinute = endTimeMinute;
+    }
+
+    public ContactItem(){
+        this.count = 0;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public Bitmap getAvatar() {

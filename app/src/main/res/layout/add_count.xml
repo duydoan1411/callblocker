@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@drawable/bo_goc"
+    android:layout_margin="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/tvTitle"
+        android:textColor="#000000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="25sp"
+        android:text="Thêm số lần chặn" />
+
+    <EditText
+        android:layout_marginTop="20dp"
+        android:id="@+id/etCount"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:textColor="#000000"
+        android:hint="Nhập 0 để luôn chặn"
+        android:textSize="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="phone" />
+
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginRight="10dp"
+        android:layout_height="wrap_content">
+
+        <Space
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <Button
+
+            android:text="Hủy"
+            android:textColor="#4CAF50"
+            android:background="@android:color/transparent"
+            android:id="@+id/btCancelCount"
+            android:textStyle="bold"
+            android:layout_width="70dp"
+            android:layout_height="50dp"/>
+
+        <Button
+            android:text="Đặt"
+            android:textColor="#4CAF50"
+            android:background="@android:color/transparent"
+            android:id="@+id/btAddCount"
+            android:textStyle="bold"
+            android:layout_width="70dp"
+            android:layout_height="50dp"/>
+
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>

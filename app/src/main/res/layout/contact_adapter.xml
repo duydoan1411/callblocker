@@ -47,6 +47,25 @@
             android:layout_height="0dp" />
 
     </LinearLayout>
+    <TextView
+        android:id="@+id/tvCount"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="0"
+        android:background="@drawable/vien"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
+    <ImageView
+        android:id="@+id/imClock"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/icon_clock"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
+
 
     <ImageView
         android:id="@+id/imDelete"

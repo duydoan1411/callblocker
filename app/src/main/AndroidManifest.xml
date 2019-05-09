@@ -19,10 +19,13 @@
         android:roundIcon="@mipmap/call_blocker_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".SmsForNumberActivity"
-                android:screenOrientation="locked"></activity>
-        <activity android:name=".SmsActivity"
-            android:screenOrientation="locked"/>
+        <activity android:name=".SetTime"></activity>
+        <activity
+            android:name=".SmsForNumberActivity"
+            android:screenOrientation="locked" />
+        <activity
+            android:name=".SmsActivity"
+            android:screenOrientation="locked" />
 
         <receiver
             android:name=".MyReceiver"
@@ -78,9 +81,8 @@
         </receiver>
 
         <activity
-            android:screenOrientation="locked"
-            android:name=".MainActivity">
-
+            android:name=".MainActivity"
+            android:screenOrientation="locked">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

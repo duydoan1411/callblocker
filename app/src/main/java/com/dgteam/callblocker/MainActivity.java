@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
         contextOfApplication = getApplicationContext();
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {
@@ -151,8 +150,6 @@ public class MainActivity extends AppCompatActivity
                 Manifest.permission.CALL_PHONE,
                 Manifest.permission.RECEIVE_SMS,
                 Manifest.permission.READ_SMS,
-
-
         };
 
 

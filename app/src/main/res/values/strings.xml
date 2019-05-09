@@ -9,4 +9,5 @@
     <string name="about">Thông tin</string>
     <string name="smsSetting">Chặn tin nhắn</string>
     <string name="callSetting">Chặn cuộc gọi</string>
+    <string name="settime">Đặt thời gian chặn</string>
 </resources>

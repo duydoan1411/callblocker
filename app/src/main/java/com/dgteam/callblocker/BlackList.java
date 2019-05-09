@@ -57,7 +57,7 @@ public class BlackList extends Fragment {
     private RecyclerView recyclerView;
     private FloatingActionButton btAdd, fabContact, fabNumber;
     protected static ArrayList<ContactItem> contactList = new ArrayList<ContactItem>();
-    private ContactAdapter contactAdapter;
+    private static ContactAdapter contactAdapter;
 
     private String mParam1;
     private String mParam2;
@@ -370,6 +370,15 @@ public class BlackList extends Fragment {
             cursor.close();
         }
         return null;
+    }
+
+    public static void setTime(int i, Bundle bundle){
+        contactList.get(i).setBeginTimeHour(bundle.getInt("beginTimeHour"));
+        contactList.get(i).setBeginTimeMinute(bundle.getInt("beginTimeMinute"));
+        contactList.get(i).setEndTimeHour(bundle.getInt("endTimeHour"));
+        contactList.get(i).setEndTimeMinute(bundle.getInt("endTimeMinute"));
+        contactList.get(i).setCheckTimeBlock(bundle.getBoolean("OnOff"));
+        writeContact();
     }
 
     public void onButtonPressed(Uri uri) {

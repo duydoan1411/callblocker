@@ -1,17 +1,23 @@
 package com.dgteam.callblocker;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
 
@@ -41,9 +47,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+        Log.d("aaa", "onBindViewHolder: "+i);
         viewHolder.tvName.setText(contactList.get(i).getName());
         viewHolder.tvNumber.setText(contactList.get(i).getNumber());
         viewHolder.imAvatar.setImageBitmap(contactList.get(i).getAvatar());
+        viewHolder.tvCount.setText(contactList.get(i).getCount()+"");
 
         viewHolder.imDetele.setOnClickListener(v -> {
             BlurPopupWindow dialog = new BlurPopupWindow.Builder(context)
@@ -64,6 +72,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             agree.setText("Xóa");
             agree.setTextColor(Color.parseColor("#FF0000"));
             agree.setOnClickListener(v1 -> {
+                Log.d("aaa", "onBindViewHolder: a "+i);
                 ContactItem backup = contactList.get(i);
                 contactList.remove(i);
                 notifyDataSetChanged();
@@ -87,6 +96,44 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             dialog.show();
 
         });
+        viewHolder.tvCount.setOnClickListener(v -> {
+
+            BlurPopupWindow dialog = new BlurPopupWindow.Builder(context)
+                    .setContentView(R.layout.add_count)
+                    .setGravity(Gravity.CENTER)
+                    .setScaleRatio(0.2f)
+                    .setBlurRadius(15)
+                    .setTintColor(0x30000000)
+                    .build();
+            EditText etNumber = (EditText) dialog.findViewById(R.id.etCount);
+            Button btAdd = (Button) dialog.findViewById(R.id.btAddCount);
+            Button btCancel = (Button) dialog.findViewById(R.id.btCancelCount);
+
+            btAdd.setOnClickListener(view2 -> {
+                if (!etNumber.getText().toString().equals("")) {
+                    contactList.get(i).setCount(Integer.parseInt(etNumber.getText().toString()));
+                    viewHolder.tvCount.setText(contactList.get(i).getCount() + "");
+                    dialog.dismiss();
+                    BlackList.writeContact();
+                }else Toast.makeText(context,"Vui lòng nhập số lần", Toast.LENGTH_SHORT).show();
+
+            });
+            dialog.show();
+            btCancel.setOnClickListener(v1 -> dialog.dismiss());
+            });
+        viewHolder.imClock.setOnClickListener(v -> {
+            Intent intent = new Intent(context, SetTime.class);
+            Bundle bundle = new Bundle();
+            bundle.clear();
+            bundle.putInt("beginTimeHour",contactList.get(i).getBeginTimeHour());
+            bundle.putInt("beginTimeMinute",contactList.get(i).getBeginTimeMinute());
+            bundle.putInt("endTimeHour",contactList.get(i).getEndTimeHour());
+            bundle.putInt("endTimeMinute",contactList.get(i).getEndTimeMinute());
+            bundle.putBoolean("OnOff",contactList.get(i).isCheckTimeBlock());
+            bundle.putInt("i",i);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -96,8 +143,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder /*implements View.OnClickListener, View.OnLongClickListener*/{
 
-        private ImageView imAvatar, imDetele;
-        private TextView tvName, tvNumber;
+        private ImageView imAvatar, imDetele, imClock;
+        private TextView tvName, tvNumber, tvCount;
 
         //private ItemClickListener itemClickListener;
 
@@ -108,6 +155,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             tvName = (TextView) itemView.findViewById(R.id.tvName);
             tvNumber = (TextView)itemView.findViewById(R.id.tvNumber);
             imDetele = (ImageView)itemView.findViewById(R.id.imDelete);
+            imClock = (ImageView) itemView.findViewById(R.id.imClock);
+            tvCount = (TextView)itemView.findViewById(R.id.tvCount);
 
 //            itemView.setOnClickListener(this);
 //            itemView.setOnLongClickListener(this);
